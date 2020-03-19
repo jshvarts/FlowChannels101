@@ -16,15 +16,10 @@ class UserDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _userDetails = MutableLiveData<UserDetails>()
-
-    val userDetails: LiveData<UserDetails>
-        get() = _userDetails
-
+    val userDetails: LiveData<UserDetails> = _userDetails
 
     private val _isError = MutableLiveData<Boolean>()
-
-    val isError: LiveData<Boolean>
-        get() = _isError
+    val isError: LiveData<Boolean> = _isError
 
     @ExperimentalCoroutinesApi
     fun lookupUser(login: String) {
