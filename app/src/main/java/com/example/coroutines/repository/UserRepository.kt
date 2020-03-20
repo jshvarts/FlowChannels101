@@ -10,7 +10,6 @@ import retrofit2.HttpException
 import java.io.IOException
 
 const val DELAY_ONE_SECOND = 1_000L
-const val MIN_REPO_STAR_COUNT = 50
 
 class UserRepository(
     private val apiService: ApiService,
@@ -42,28 +41,30 @@ class UserRepository(
     }
 
     @ExperimentalCoroutinesApi
-    fun getUserRepos(login: String): Flow<Repo> {
-        return flow {
-            apiService.getUserRepos(login).forEach {
-                emit(it)
-            }
-        }
-            .onEach {
-                println("Repo name before filter: ${it.name}")
-            }
-            .filter { it.stars > MIN_REPO_STAR_COUNT }
-            .onStart {
-                println("Started flow")
-            }
-            .onCompletion {
-                println("Completed flow")
-            }
-            .onEach {
-                println("Repo name after filter: ${it.name}")
-            }
-            .catch {
-                if (it !is HttpException) throw it // rethrow all but HttpException
-            }
+    suspend fun getUserRepos(login: String): Flow<Repo> {
+        return apiService.getUserRepos(login).asFlow()
+            .onStart { println("Started flow") }
+            .onCompletion { println("Completed flow") }
+            .onEach { println("Repo name before filter: ${it.name}") }
+            .filter { it.stars >= 50 }
+            .onEach { println("Repo name after filter: ${it.name}") }
+            .catch { if (it !is HttpException) throw it }
             .flowOn(dispatchers.io())
     }
+
+//    @ExperimentalCoroutinesApi
+//    fun getUserRepos(login: String): Flow<Repo> {
+//        return flow {
+//            apiService.getUserRepos(login).forEach {
+//                emit(it)
+//            }
+//        }
+//            .onStart { println("Started flow") }
+//            .onCompletion { println("Completed flow") }
+//            .onEach { println("Repo name before filter: ${it.name}") }
+//            .filter { it.stars >= 50 }
+//            .onEach { println("Repo name after filter: ${it.name}") }
+//            .catch { if (it !is HttpException) throw it }
+//            .flowOn(dispatchers.io())
+//    }
 }
