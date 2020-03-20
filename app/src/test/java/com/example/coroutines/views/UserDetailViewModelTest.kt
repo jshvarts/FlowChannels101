@@ -38,7 +38,7 @@ class UserDetailViewModelTest {
     fun setUp() {
         userDetailViewModel = UserDetailViewModel(repository).apply {
             userDetails.observeForever(userDetailsObserver)
-            isError.observeForever(isErrorObserver)
+            isUserDetailsError.observeForever(isErrorObserver)
         }
     }
 
@@ -52,7 +52,7 @@ class UserDetailViewModelTest {
 
         doReturn(flow)
             .whenever(repository)
-            .userDetails(TEST_USERNAME)
+            .getUserDetails(TEST_USERNAME)
 
         launch {
             channel.send(result)
@@ -71,7 +71,7 @@ class UserDetailViewModelTest {
 
         doReturn(flow)
             .whenever(repository)
-            .userDetails(TEST_USERNAME)
+            .getUserDetails(TEST_USERNAME)
 
         launch {
             channel.send(result)

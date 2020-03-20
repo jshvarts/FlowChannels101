@@ -24,13 +24,13 @@ class UserRepositoryTest {
         val userDetails = UserDetails(TEST_USERNAME, 1, "someAvatarUrl")
 
         val apiService = mock<ApiService> {
-            onBlocking { userDetails(TEST_USERNAME) } doReturn userDetails
+            onBlocking { getUserDetails(TEST_USERNAME) } doReturn userDetails
         }
 
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.userDetails("someUsername")
+        val flow = repository.getUserDetails("someUsername")
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -43,7 +43,7 @@ class UserRepositoryTest {
     fun `should get error for user details`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
         val apiService = mock<ApiService> {
-            onBlocking { userDetails(TEST_USERNAME) } doAnswer {
+            onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
                 throw IOException()
             }
         }
@@ -51,7 +51,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.userDetails("someUsername")
+        val flow = repository.getUserDetails("someUsername")
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -63,7 +63,7 @@ class UserRepositoryTest {
     fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
         val apiService = mock<ApiService> {
-            onBlocking { userDetails(TEST_USERNAME) } doAnswer {
+            onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
                 throw IOException()
             }
         }
@@ -71,7 +71,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.userDetailsRetryIfFailed("someUsername")
+        val flow = repository.getUserDetailsRetryIfFailed("someUsername")
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -87,7 +87,7 @@ class UserRepositoryTest {
         val userDetails = UserDetails(TEST_USERNAME, 1, "someAvatarUrl")
 
         val apiService = mock<ApiService> {
-            onBlocking { userDetails(TEST_USERNAME) } doAnswer {
+            onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
                 if (throwError) throw IOException() else userDetails
             }
         }
@@ -95,7 +95,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.userDetailsRetryIfFailed("someUsername")
+        val flow = repository.getUserDetailsRetryIfFailed("someUsername")
 
         // THEN
         launch {
