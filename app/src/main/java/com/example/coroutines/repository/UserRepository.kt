@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.*
 import java.io.IOException
 
 const val DELAY_ONE_SECOND = 1_000L
+const val MIN_REPO_STAR_COUNT = 50
 
 class UserRepository(
     private val apiService: ApiService,
@@ -40,12 +41,25 @@ class UserRepository(
     }
 
     @ExperimentalCoroutinesApi
-    fun getUserRepos(login: String): Flow<Result<List<Repo>>> {
+    fun getUserRepos(login: String): Flow<Repo> {
         return flow {
-            val repos = apiService.getUserRepos(login)
-            emit(Result.success(repos))
+            apiService.getUserRepos(login).forEach {
+                emit(it)
+            }
         }
-            .catch { emit(Result.failure(it)) }
+            .onEach {
+                println("Repo name before filter: ${it.name}")
+            }
+            .filter { it.stars > MIN_REPO_STAR_COUNT }
+            .onStart {
+                println("Started flow")
+            }
+            .onCompletion {
+                println("Completed flow")
+            }
+            .onEach {
+                println("Repo name after filter: ${it.name}")
+            }
             .flowOn(dispatchers.io())
     }
 }

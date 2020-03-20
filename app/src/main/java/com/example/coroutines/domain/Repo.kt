@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-class Repo(
+data class Repo(
     val name: String,
     val owner: RepoOwner,
     @Json(name = "stargazers_count") val stars: Int
