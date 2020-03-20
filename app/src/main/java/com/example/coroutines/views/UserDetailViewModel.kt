@@ -8,6 +8,7 @@ import com.example.coroutines.domain.Repo
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -48,12 +49,9 @@ class UserDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             val flow = userRepository.getUserRepos(login)
-            // toList() is an extension function on Flow to collect data into a destination
-            try {
-                _userRepos.value = flow.toList()
-            } catch (e: Throwable) {
-                _isUserReposError.value = true
-            }
+            _userRepos.value = flow
+                .catch { _isUserReposError.value = true }
+                .toList()
         }
     }
 }
