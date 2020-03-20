@@ -33,7 +33,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.getUserDetails("someUsername")
+        val flow = repository.getUserDetails(TEST_USERNAME)
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -54,7 +54,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.getUserDetails("someUsername")
+        val flow = repository.getUserDetails(TEST_USERNAME)
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -74,7 +74,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.getUserDetailsRetryIfFailed("someUsername")
+        val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
 
         // THEN
         flow.collect { result: Result<UserDetails> ->
@@ -98,7 +98,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val flow = repository.getUserDetailsRetryIfFailed("someUsername")
+        val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
 
         // THEN
         launch {
@@ -118,8 +118,8 @@ class UserRepositoryTest {
     @Test
     fun `should get user repos on success`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
-        val repo1 = Repo(name = "someRepo1", owner = RepoOwner("someUsername"), stars = 10)
-        val repo2 = Repo(name = "someRepo2", owner = RepoOwner("someUsername"), stars = 55)
+        val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 10)
+        val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 55)
 
         val rawRepoList = listOf(repo1, repo2)
 
@@ -130,7 +130,7 @@ class UserRepositoryTest {
         val repository = UserRepository(apiService, testDispatcherProvider)
 
         // WHEN
-        val actualRepoList = repository.getUserRepos("someUsername")
+        val actualRepoList = repository.getUserRepos(TEST_USERNAME)
             .toList()
 
         // THEN
@@ -152,7 +152,7 @@ class UserRepositoryTest {
             val repository = UserRepository(apiService, testDispatcherProvider)
 
             // WHEN/THEN
-            val actualRepoList = repository.getUserRepos("someUsername")
+            val actualRepoList = repository.getUserRepos(TEST_USERNAME)
                 .toList()
 
             actualRepoList.shouldBeEmpty()
