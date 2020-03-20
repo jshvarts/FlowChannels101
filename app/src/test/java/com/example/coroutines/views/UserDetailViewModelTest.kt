@@ -17,7 +17,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-private const val TEST_LOGIN = "someUsername"
+private const val TEST_USERNAME = "someUsername"
 
 class UserDetailViewModelTest {
     @get:Rule
@@ -44,11 +44,7 @@ class UserDetailViewModelTest {
 
     @Test
     fun `should emit user details`() = rule.dispatcher.runBlockingTest {
-        val userDetails = UserDetails(
-            login = TEST_LOGIN,
-            id = 1,
-            avatarUrl = "someAvatarUrl"
-        )
+        val userDetails = UserDetails(TEST_USERNAME, 1, "someAvatarUrl")
 
         val result = Result.success(userDetails)
         val channel = Channel<Result<UserDetails>>()
@@ -56,35 +52,33 @@ class UserDetailViewModelTest {
 
         doReturn(flow)
             .whenever(repository)
-            .userDetails(login = TEST_LOGIN)
+            .userDetails(TEST_USERNAME)
 
         launch {
             channel.send(result)
         }
 
-        userDetailViewModel.lookupUser(TEST_LOGIN)
+        userDetailViewModel.lookupUser(TEST_USERNAME)
 
         verify(userDetailsObserver).onChanged(userDetails)
     }
 
     @Test
     fun `should emit error on failure`() = rule.dispatcher.runBlockingTest {
-        val isError = true
-
         val result = Result.failure<UserDetails>(Exception())
         val channel = Channel<Result<UserDetails>>()
         val flow = channel.consumeAsFlow()
 
         doReturn(flow)
             .whenever(repository)
-            .userDetails(login = TEST_LOGIN)
+            .userDetails(TEST_USERNAME)
 
         launch {
             channel.send(result)
         }
 
-        userDetailViewModel.lookupUser(TEST_LOGIN)
+        userDetailViewModel.lookupUser(TEST_USERNAME)
 
-        verify(isErrorObserver).onChanged(isError)
+        verify(isErrorObserver).onChanged(true)
     }
 }
