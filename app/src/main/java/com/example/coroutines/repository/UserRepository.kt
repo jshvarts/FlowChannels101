@@ -6,6 +6,7 @@ import com.example.coroutines.threading.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import retrofit2.HttpException
 import java.io.IOException
 
 const val DELAY_ONE_SECOND = 1_000L
@@ -31,8 +32,8 @@ class UserRepository(
         return flow {
             val userDetails = apiService.getUserDetails(login)
             emit(Result.success(userDetails))
-        }.retry(retries = 2) { t ->
-            (t is IOException).also {
+        }.retry(retries = 2) { e ->
+            (e is IOException).also {
                 if (it) delay(DELAY_ONE_SECOND)
             }
         }
@@ -59,6 +60,9 @@ class UserRepository(
             }
             .onEach {
                 println("Repo name after filter: ${it.name}")
+            }
+            .catch {
+                if (it !is HttpException) throw it // rethrow all but HttpException
             }
             .flowOn(dispatchers.io())
     }

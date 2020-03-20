@@ -49,7 +49,11 @@ class UserDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val flow = userRepository.getUserRepos(login)
             // toList() is an extension function on Flow to collect data into a destination
-            _userRepos.value = flow.toList()
+            try {
+                _userRepos.value = flow.toList()
+            } catch (e: Throwable) {
+                _isUserReposError.value = true
+            }
         }
     }
 }

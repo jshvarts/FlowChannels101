@@ -2,7 +2,6 @@ package com.example.coroutines.repository
 
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.domain.UserDetails
-import kotlinx.coroutines.channels.ReceiveChannel
 import retrofit2.http.GET
 import retrofit2.http.Path
 
