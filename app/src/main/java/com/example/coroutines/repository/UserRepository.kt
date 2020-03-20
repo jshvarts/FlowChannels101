@@ -8,6 +8,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.io.IOException
 
+const val DELAY_ONE_SECOND = 1_000L
+
 class UserRepository(
     private val apiService: ApiService,
     private val dispatchers: DispatcherProvider
@@ -30,7 +32,7 @@ class UserRepository(
             emit(Result.success(userDetails))
         }.retry(retries = 2) { t ->
             (t is IOException).also {
-                if (it) delay(timeMillis = 1_000L)
+                if (it) delay(DELAY_ONE_SECOND)
             }
         }
             .catch { emit(Result.failure(it)) }

@@ -105,10 +105,10 @@ class UserRepositoryTest {
         }
 
         // 1st retry
-        advanceTimeBy(delayTimeMillis = 1_000L)
+        advanceTimeBy(DELAY_ONE_SECOND)
 
         // 2nd retry
         throwError = false
-        advanceTimeBy(delayTimeMillis = 1_000L)
+        advanceTimeBy(DELAY_ONE_SECOND)
     }
 }
