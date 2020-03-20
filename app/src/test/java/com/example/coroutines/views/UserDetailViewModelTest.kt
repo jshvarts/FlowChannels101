@@ -44,6 +44,7 @@ class UserDetailViewModelTest {
 
     @Test
     fun `should emit user details`() = rule.dispatcher.runBlockingTest {
+        // GIVEN
         val userDetails = UserDetails(TEST_USERNAME, 1, "someAvatarUrl")
 
         val result = Result.success(userDetails)
@@ -54,17 +55,20 @@ class UserDetailViewModelTest {
             .whenever(repository)
             .getUserDetails(TEST_USERNAME)
 
+        // WHEN
         launch {
             channel.send(result)
         }
 
         userDetailViewModel.lookupUser(TEST_USERNAME)
 
+        // THEN
         verify(userDetailsObserver).onChanged(userDetails)
     }
 
     @Test
     fun `should emit error on failure`() = rule.dispatcher.runBlockingTest {
+        // GIVEN
         val result = Result.failure<UserDetails>(Exception())
         val channel = Channel<Result<UserDetails>>()
         val flow = channel.consumeAsFlow()
@@ -73,12 +77,14 @@ class UserDetailViewModelTest {
             .whenever(repository)
             .getUserDetails(TEST_USERNAME)
 
+        // WHEN
         launch {
             channel.send(result)
         }
 
         userDetailViewModel.lookupUser(TEST_USERNAME)
 
+        // THEN
         verify(isErrorObserver).onChanged(true)
     }
 }
