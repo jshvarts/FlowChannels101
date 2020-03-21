@@ -10,7 +10,6 @@ import com.example.coroutines.repository.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,14 +20,14 @@ class UserDetailViewModel @Inject constructor(
     private val _userDetails = MutableLiveData<UserDetails>()
     val userDetails: LiveData<UserDetails> = _userDetails
 
-    private val _userRepos = MutableLiveData<List<Repo>>()
-    val userRepos: LiveData<List<Repo>> = _userRepos
+    private val _userRepo = MutableLiveData<Repo>()
+    val userRepo: LiveData<Repo> = _userRepo
 
     private val _isUserDetailsError = MutableLiveData<Boolean>()
     val isUserDetailsError: LiveData<Boolean> = _isUserDetailsError
 
-    private val _isUserReposError = MutableLiveData<Boolean>()
-    val isUserReposError: LiveData<Boolean> = _isUserReposError
+    private val _isUserRepoError = MutableLiveData<Boolean>()
+    val isUserRepoError: LiveData<Boolean> = _isUserRepoError
 
     @ExperimentalCoroutinesApi
     fun lookupUser(login: String) {
@@ -49,9 +48,12 @@ class UserDetailViewModel @Inject constructor(
 
         viewModelScope.launch {
             val flow = userRepository.getUserRepos(login)
-            _userRepos.value = flow
-                .catch { _isUserReposError.value = true }
-                .toList()
+
+            flow.catch {
+                _isUserRepoError.value = true
+            }.collect { repo ->
+                _userRepo.value = repo
+            }
         }
     }
 }

@@ -7,17 +7,17 @@ import com.example.coroutines.domain.RepoOwner
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.UserRepository
 import com.example.coroutines.threading.CoroutineTestRule
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import com.nhaarman.mockitokotlin2.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import org.amshove.kluent.shouldBeFalse
+import org.amshove.kluent.shouldBeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 private const val TEST_USERNAME = "someUsername"
 
@@ -34,9 +34,9 @@ class UserDetailViewModelTest {
 
     private val isUserDetailsErrorObserver = mock<Observer<Boolean>>()
 
-    private val userReposObserver = mock<Observer<List<Repo>>>()
+    private val userRepoObserver = mock<Observer<Repo>>()
 
-    private val isUserReposErrorObserver = mock<Observer<Boolean>>()
+    private val isUserRepoErrorObserver = mock<Observer<Boolean>>()
 
     private lateinit var userDetailViewModel: UserDetailViewModel
 
@@ -45,8 +45,8 @@ class UserDetailViewModelTest {
         userDetailViewModel = UserDetailViewModel(repository).apply {
             userDetails.observeForever(userDetailsObserver)
             isUserDetailsError.observeForever(isUserDetailsErrorObserver)
-            userRepos.observeForever(userReposObserver)
-            isUserReposError.observeForever(isUserReposErrorObserver)
+            userRepo.observeForever(userRepoObserver)
+            isUserRepoError.observeForever(isUserRepoErrorObserver)
         }
     }
 
@@ -99,7 +99,9 @@ class UserDetailViewModelTest {
     @Test
     fun `should emit user repos on success`() = rule.dispatcher.runBlockingTest {
         // GIVEN
-        val repo = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
+
         val channel = Channel<Repo>()
         val flow = channel.consumeAsFlow()
 
@@ -109,12 +111,44 @@ class UserDetailViewModelTest {
 
         // WHEN
         launch {
-            channel.send(repo)
+            channel.send(repo1)
+            channel.send(repo2)
         }
 
         userDetailViewModel.lookupUserRepos(TEST_USERNAME)
 
         // THEN
-        verify(userReposObserver).onChanged(listOf(repo))
+        inOrder(userRepoObserver) {
+            verify(userRepoObserver).onChanged(repo1)
+            verify(userRepoObserver).onChanged(repo2)
+        }
+        channel.isClosedForSend.shouldBeFalse()
+    }
+
+    @Test
+    fun `should emit error on repos lookup failure`() = rule.dispatcher.runBlockingTest {
+        // GIVEN
+        val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val channel = Channel<Repo>()
+        val flow = channel.consumeAsFlow()
+
+        doReturn(flow)
+            .whenever(repository)
+            .getUserRepos(TEST_USERNAME)
+
+        // WHEN
+        launch {
+            channel.send(repo1)
+            channel.close(IOException())
+        }
+
+        userDetailViewModel.lookupUserRepos(TEST_USERNAME)
+
+        // THEN
+        inOrder(userRepoObserver, isUserRepoErrorObserver) {
+            verify(userRepoObserver).onChanged(repo1)
+            verify(isUserRepoErrorObserver).onChanged(true)
+        }
+        channel.isClosedForSend.shouldBeTrue()
     }
 }

@@ -47,9 +47,9 @@ class UserDetailFragment : Fragment() {
             println("success getting user details: $it")
         })
 
-        viewModel.userRepos.observe(viewLifecycleOwner, Observer {
+        viewModel.userRepo.observe(viewLifecycleOwner, Observer {
             reposMessageTitle.text = resources.getText(R.string.message_repos_success)
-            println("success getting list of user repos: $it")
+            println("success getting user repo: $it")
         })
 
         viewModel.isUserDetailsError.observe(viewLifecycleOwner, Observer {
@@ -65,7 +65,7 @@ class UserDetailFragment : Fragment() {
             println("error getting user details: $it")
         })
 
-        viewModel.isUserReposError.observe(viewLifecycleOwner, Observer {
+        viewModel.isUserRepoError.observe(viewLifecycleOwner, Observer {
             reposMessageTitle.apply {
                 text = resources.getText(R.string.message_repos_error)
                 setTextColor(
