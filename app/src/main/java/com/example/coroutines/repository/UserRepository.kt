@@ -59,11 +59,7 @@ class UserRepository(
 //                emit(it)
 //            }
 //        }
-//            .onStart { println("Started flow") }
-//            .onCompletion { println("Completed flow") }
-//            .onEach { println("Repo name before filter: ${it.name}") }
 //            .filter { it.stars >= 50 }
-//            .onEach { println("Repo name after filter: ${it.name}") }
 //            .catch { if (it !is HttpException) throw it }
 //            .flowOn(dispatchers.io())
 //    }
