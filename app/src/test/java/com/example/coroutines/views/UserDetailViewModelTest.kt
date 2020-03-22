@@ -122,7 +122,7 @@ class UserDetailViewModelTest {
             verify(userRepoObserver).onChanged(repo1)
             verify(userRepoObserver).onChanged(repo2)
         }
-        channel.isClosedForSend.shouldBeFalse()
+        channel.isClosedForSend.shouldBeTrue()
     }
 
     @Test
