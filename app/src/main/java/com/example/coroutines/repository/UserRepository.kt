@@ -2,6 +2,7 @@ package com.example.coroutines.repository
 
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.domain.UserDetails
+import com.example.coroutines.repository.api.ApiService
 import com.example.coroutines.threading.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay

@@ -1,6 +1,6 @@
 package com.example.coroutines.di
 
-import com.example.coroutines.repository.ApiService
+import com.example.coroutines.repository.api.ApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

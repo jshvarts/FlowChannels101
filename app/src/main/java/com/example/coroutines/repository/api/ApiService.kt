@@ -1,4 +1,4 @@
-package com.example.coroutines.repository
+package com.example.coroutines.repository.api
 
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.domain.UserDetails

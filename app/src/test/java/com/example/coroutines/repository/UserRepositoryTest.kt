@@ -3,6 +3,7 @@ package com.example.coroutines.repository
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.domain.RepoOwner
 import com.example.coroutines.domain.UserDetails
+import com.example.coroutines.repository.api.ApiService
 import com.example.coroutines.threading.TestDispatcherProvider
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
