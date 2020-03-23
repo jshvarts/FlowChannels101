@@ -52,30 +52,34 @@ class UserDetailFragment : Fragment() {
             println("success getting user repo: $it")
         })
 
-        viewModel.isUserDetailsError.observe(viewLifecycleOwner, Observer {
-            userDetailsMessageTitle.apply {
-                text = resources.getText(R.string.message_user_details_error)
-                setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.colorAccent
+        viewModel.isUserDetailsError.observe(viewLifecycleOwner, Observer { isError ->
+            if (isError) {
+                userDetailsMessageTitle.apply {
+                    text = resources.getText(R.string.message_user_details_error)
+                    setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.colorAccent
+                        )
                     )
-                )
+                }
+                println("error getting user details")
             }
-            println("error getting user details: $it")
         })
 
-        viewModel.isUserRepoError.observe(viewLifecycleOwner, Observer {
-            reposMessageTitle.apply {
-                text = resources.getText(R.string.message_repos_error)
-                setTextColor(
-                    ContextCompat.getColor(
-                        requireActivity(),
-                        R.color.colorAccent
+        viewModel.isUserRepoError.observe(viewLifecycleOwner, Observer { isError ->
+            if (isError) {
+                reposMessageTitle.apply {
+                    text = resources.getText(R.string.message_repos_error)
+                    setTextColor(
+                        ContextCompat.getColor(
+                            requireActivity(),
+                            R.color.colorAccent
+                        )
                     )
-                )
+                }
+                println("error getting user repos")
             }
-            println("error getting user repos: $it")
         })
 
         with(viewModel) {

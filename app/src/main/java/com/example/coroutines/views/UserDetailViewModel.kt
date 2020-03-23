@@ -23,10 +23,10 @@ class UserDetailViewModel @Inject constructor(
     private val _userRepo = MutableLiveData<Repo>()
     val userRepo: LiveData<Repo> = _userRepo
 
-    private val _isUserDetailsError = MutableLiveData<Boolean>()
+    private val _isUserDetailsError = MutableLiveData<Boolean>(false)
     val isUserDetailsError: LiveData<Boolean> = _isUserDetailsError
 
-    private val _isUserRepoError = MutableLiveData<Boolean>()
+    private val _isUserRepoError = MutableLiveData<Boolean>(false)
     val isUserRepoError: LiveData<Boolean> = _isUserRepoError
 
     @ExperimentalCoroutinesApi
