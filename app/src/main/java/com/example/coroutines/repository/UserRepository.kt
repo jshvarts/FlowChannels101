@@ -24,7 +24,7 @@ class UserRepository(
             emit(Result.success(userDetails))
         }
             .catch { emit(Result.failure(it)) }
-            .flowOn(dispatchers.io())
+            .flowOn(dispatchers.io)
     }
 
     @ExperimentalCoroutinesApi
@@ -38,21 +38,18 @@ class UserRepository(
             }
         }
             .catch { emit(Result.failure(it)) }
-            .flowOn(dispatchers.io())
+            .flowOn(dispatchers.io)
     }
 
     @ExperimentalCoroutinesApi
     suspend fun getUserRepos(login: String): Flow<Repo> {
         return apiService.getUserRepos(login).asFlow()
-            .onStart { println("Started flow") }
-            .onCompletion { println("Completed flow") }
-            .onEach { println("Repo name before filter: ${it.name}") }
             .filter { it.stars >= 50 }
-            .onEach { println("Repo name after filter: ${it.name}") }
             .catch { if (it !is HttpException) throw it }
-            .flowOn(dispatchers.io())
+            .flowOn(dispatchers.io)
     }
 
+//    A more verbose version of the above
 //    @ExperimentalCoroutinesApi
 //    fun getUserRepos(login: String): Flow<Repo> {
 //        return flow {
@@ -60,8 +57,12 @@ class UserRepository(
 //                emit(it)
 //            }
 //        }
-//            .filter { it.stars >= 50 }
-//            .catch { if (it !is HttpException) throw it }
-//            .flowOn(dispatchers.io())
+//        .onStart { println("Started flow") }
+//        .onCompletion { println("Completed flow") }
+//        .onEach { println("Repo name before filter: ${it.name}") }
+//        .filter { it.stars >= 50 }
+//        .onEach { println("Repo name after filter: ${it.name}") }
+//        .catch { if (it !is HttpException) throw it }
+//        .flowOn(dispatchers.io)
 //    }
 }

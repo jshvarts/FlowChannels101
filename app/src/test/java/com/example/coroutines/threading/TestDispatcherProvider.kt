@@ -8,10 +8,10 @@ import kotlinx.coroutines.test.runBlockingTest
 class TestDispatcherProvider(
     private val dispatcher: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : DispatcherProvider {
-    override fun default(): CoroutineDispatcher = dispatcher
-    override fun io(): CoroutineDispatcher = dispatcher
-    override fun main(): CoroutineDispatcher = dispatcher
-    override fun unconfined(): CoroutineDispatcher = dispatcher
+    override val default: CoroutineDispatcher = dispatcher
+    override val io: CoroutineDispatcher = dispatcher
+    override val main: CoroutineDispatcher = dispatcher
+    override val unconfined: CoroutineDispatcher = dispatcher
 
     fun runBlockingTest(block: suspend TestCoroutineScope.() -> Unit) =
         dispatcher.runBlockingTest(block)

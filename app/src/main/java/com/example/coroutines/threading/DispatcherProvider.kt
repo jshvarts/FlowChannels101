@@ -3,13 +3,16 @@ package com.example.coroutines.threading
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-// alternatively, use https://github.com/RBusarow/Dispatch
-
 interface DispatcherProvider {
-    fun main(): CoroutineDispatcher = Dispatchers.Main
-    fun default(): CoroutineDispatcher = Dispatchers.Default
-    fun io(): CoroutineDispatcher = Dispatchers.IO
-    fun unconfined(): CoroutineDispatcher = Dispatchers.Unconfined
+    val main: CoroutineDispatcher
+    val default: CoroutineDispatcher
+    val io: CoroutineDispatcher
+    val unconfined: CoroutineDispatcher
 }
 
-class DefaultDispatcherProvider : DispatcherProvider
+class DefaultDispatcherProvider(
+    override val main: CoroutineDispatcher = Dispatchers.Main,
+    override val default: CoroutineDispatcher = Dispatchers.Default,
+    override val io: CoroutineDispatcher = Dispatchers.IO,
+    override val unconfined: CoroutineDispatcher = Dispatchers.Unconfined
+) : DispatcherProvider
