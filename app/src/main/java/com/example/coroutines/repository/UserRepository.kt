@@ -6,11 +6,18 @@ import com.example.coroutines.repository.api.ApiService
 import com.example.coroutines.threading.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.retry
 import retrofit2.HttpException
 import java.io.IOException
 
 const val DELAY_ONE_SECOND = 1_000L
+const val MIN_STARS = 50
 
 class UserRepository(
     private val apiService: ApiService,
@@ -44,7 +51,7 @@ class UserRepository(
     @ExperimentalCoroutinesApi
     suspend fun getUserRepos(login: String): Flow<Repo> {
         return apiService.getUserRepos(login).asFlow()
-            .filter { it.stars >= 50 }
+            .filter { it.stars >= MIN_STARS }
             .catch { if (it !is HttpException) throw it }
             .flowOn(dispatchers.io)
     }

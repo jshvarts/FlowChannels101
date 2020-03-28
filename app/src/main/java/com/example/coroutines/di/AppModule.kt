@@ -1,7 +1,7 @@
 package com.example.coroutines.di
 
-import com.example.coroutines.repository.api.ApiService
 import com.example.coroutines.repository.UserRepository
+import com.example.coroutines.repository.api.ApiService
 import com.example.coroutines.threading.DefaultDispatcherProvider
 import com.example.coroutines.threading.DispatcherProvider
 import dagger.Module

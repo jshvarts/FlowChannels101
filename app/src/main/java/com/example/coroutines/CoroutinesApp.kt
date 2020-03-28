@@ -6,17 +6,17 @@ import com.example.coroutines.di.DaggerAppComponent
 import timber.log.Timber
 
 class CoroutinesApp : Application() {
-  
-  lateinit var appComponent: AppComponent
-    private set
 
-  override fun onCreate() {
-    super.onCreate()
+    lateinit var appComponent: AppComponent
+        private set
 
-    if (BuildConfig.DEBUG) {
-      Timber.plant(Timber.DebugTree())
+    override fun onCreate() {
+        super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+
+        appComponent = DaggerAppComponent.factory().create(this)
     }
-
-    appComponent = DaggerAppComponent.factory().create(this)
-  }
 }

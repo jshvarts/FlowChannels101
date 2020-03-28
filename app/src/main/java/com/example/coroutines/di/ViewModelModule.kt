@@ -14,20 +14,20 @@ import kotlin.reflect.KClass
 
 @Module
 abstract class ViewModelModule {
-  @Binds
-  @IntoMap
-  @ViewModelKey(UserDetailViewModel::class)
-  abstract fun bindUserDetailViewModel(view: UserDetailViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserDetailViewModel::class)
+    abstract fun bindUserDetailViewModel(view: UserDetailViewModel): ViewModel
 
-  @Binds
-  abstract fun bindUserDetailViewModelFactory(factory: UserDetailViewModelFactory): ViewModelProvider.Factory
+    @Binds
+    abstract fun bindUserDetailViewModelFactory(factory: UserDetailViewModelFactory): ViewModelProvider.Factory
 }
 
 @MustBeDocumented
 @Target(
-  AnnotationTarget.FUNCTION,
-  AnnotationTarget.PROPERTY_GETTER,
-  AnnotationTarget.PROPERTY_SETTER
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
 )
 @Retention(AnnotationRetention.RUNTIME)
 @MapKey
@@ -35,13 +35,13 @@ annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
 @Singleton
 class UserDetailViewModelFactory @Inject constructor(
-  private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
-  @Suppress("UNCHECKED_CAST")
-  override fun <T : ViewModel> create(modelClass: Class<T>): T {
-    val creator = creators[modelClass] ?: creators.entries.firstOrNull {
-      modelClass.isAssignableFrom(it.key)
-    }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
-    return creator.get() as T
-  }
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        val creator = creators[modelClass] ?: creators.entries.firstOrNull {
+            modelClass.isAssignableFrom(it.key)
+        }?.value ?: throw IllegalArgumentException("unknown model class $modelClass")
+        return creator.get() as T
+    }
 }
