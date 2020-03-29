@@ -3,6 +3,7 @@ package com.example.coroutines.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.coroutines.views.UserDetailViewModel
+import com.example.coroutines.views.UserReposViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
@@ -20,7 +21,12 @@ abstract class ViewModelModule {
     abstract fun bindUserDetailViewModel(view: UserDetailViewModel): ViewModel
 
     @Binds
-    abstract fun bindUserDetailViewModelFactory(factory: UserDetailViewModelFactory): ViewModelProvider.Factory
+    @IntoMap
+    @ViewModelKey(UserReposViewModel::class)
+    abstract fun bindUserReposViewModel(view: UserReposViewModel): ViewModel
+
+    @Binds
+    abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
 }
 
 @MustBeDocumented
@@ -34,7 +40,7 @@ abstract class ViewModelModule {
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
 @Singleton
-class UserDetailViewModelFactory @Inject constructor(
+class ViewModelFactory @Inject constructor(
     private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">FlowChannels-101</string>
-    <string name="message_user_details_success">User details lookup success</string>
-    <string name="message_repos_success">Repos lookup success</string>
-    <string name="message_user_details_error">User details lookup error</string>
-    <string name="message_repos_error">Repos lookup error</string>
-    <string name="message_detail">Check logs for details</string>
+    <string name="app_name">Flow Channels 101</string>
+    <string name="nav_title_repos">Repositories</string>
+    <string name="nav_title_user_details">User Details</string>
+    <plurals name="repo_stars">
+        <item quantity="one">1 star</item>
+        <item quantity="other">%d stars</item>
+    </plurals>
+    <string name="user_company">Company: %s</string>
+    <string name="error_message">Error occurred. Check logs for details</string>
 </resources>

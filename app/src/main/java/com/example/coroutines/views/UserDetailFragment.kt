@@ -4,21 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.coroutines.CoroutinesApp
 import com.example.coroutines.R
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_details_fragment.*
 import javax.inject.Inject
 
-class UserDetailFragment : Fragment() {
+private const val AVATAR_WIDTH = 250
 
-    companion object {
-        fun newInstance() = UserDetailFragment()
-    }
+class UserDetailFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,50 +41,33 @@ class UserDetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.userDetails.observe(viewLifecycleOwner, Observer {
-            userDetailsMessageTitle.text = resources.getText(R.string.message_user_details_success)
-            println("success getting user details: $it")
+        viewModel.userDetails.observe(viewLifecycleOwner, Observer { userDetails ->
+            println("success getting user details: $userDetails")
+
+            Picasso.get()
+                .load(userDetails.avatarUrl)
+                .resize(AVATAR_WIDTH, AVATAR_WIDTH)
+                .centerCrop()
+                .into(avatarImageView)
+
+            userFullName.text = userDetails.name
+            userCompany.text = getString(R.string.user_company, userDetails.company)
         })
 
-        viewModel.userRepo.observe(viewLifecycleOwner, Observer {
-            reposMessageTitle.text = resources.getText(R.string.message_repos_success)
-            println("success getting user repo: $it")
-        })
-
-        viewModel.isUserDetailsError.observe(viewLifecycleOwner, Observer { isError ->
+        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
             if (isError) {
-                userDetailsMessageTitle.apply {
-                    text = resources.getText(R.string.message_user_details_error)
-                    setTextColor(
-                        ContextCompat.getColor(
-                            requireActivity(),
-                            R.color.colorAccent
-                        )
-                    )
-                }
                 println("error getting user details")
+                Snackbar.make(
+                    userDetailsContainer,
+                    R.string.error_message,
+                    Snackbar.LENGTH_LONG
+                ).show()
             }
         })
 
-        viewModel.isUserRepoError.observe(viewLifecycleOwner, Observer { isError ->
-            if (isError) {
-                reposMessageTitle.apply {
-                    text = resources.getText(R.string.message_repos_error)
-                    setTextColor(
-                        ContextCompat.getColor(
-                            requireActivity(),
-                            R.color.colorAccent
-                        )
-                    )
-                }
-                println("error getting user repos")
-            }
-        })
+        val username = arguments?.getString("username")
+            ?: throw IllegalArgumentException("Expected username in bundle")
 
-        with(viewModel) {
-            val username = "jshvarts"
-            lookupUser(username)
-            lookupUserRepos(username)
-        }
+        viewModel.lookupUser(username)
     }
 }

@@ -2,6 +2,7 @@ package com.example.coroutines.di
 
 import android.app.Application
 import com.example.coroutines.views.UserDetailFragment
+import com.example.coroutines.views.UserReposFragment
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -21,4 +22,5 @@ interface AppComponent {
     }
 
     fun inject(fragment: UserDetailFragment)
+    fun inject(fragment: UserReposFragment)
 }
