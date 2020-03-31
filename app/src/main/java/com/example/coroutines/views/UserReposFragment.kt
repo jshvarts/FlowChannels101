@@ -2,6 +2,9 @@ package com.example.coroutines.views
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -33,6 +36,7 @@ class UserReposFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         (requireActivity().application as CoroutinesApp)
             .appComponent
             .inject(this)
@@ -73,6 +77,15 @@ class UserReposFragment : Fragment() {
         })
 
         viewModel.lookupUserRepos("JakeWharton")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.repos_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.changeSortOrder()
+        return true
     }
 
     private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
