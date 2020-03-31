@@ -24,13 +24,10 @@ class UserReposViewModel @Inject constructor(
     fun lookupUserRepos(login: String) {
 
         viewModelScope.launch {
-            val flow = userReposRepository.getUserRepos(login)
-
-            _userRepos.value = flow.catch {
-                _isError.value = true
-            }
-                .toList()
-                .sortedByDescending { it.stars }
+            _userRepos.value = userReposRepository.getUserRepos(login)
+                .catch {
+                    _isError.value = true
+                }.toList()
         }
     }
 }

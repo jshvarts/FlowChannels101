@@ -9,8 +9,7 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.flow.toList
 import org.amshove.kluent.shouldBeEmpty
-import org.amshove.kluent.shouldContain
-import org.amshove.kluent.shouldHaveSize
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.Test
 import java.io.IOException
 
@@ -26,10 +25,10 @@ class UserReposRepositoryTest {
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 10)
         val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 55)
 
-        val rawRepoList = listOf(repo1, repo2)
+        val expectedRepoList = listOf(repo1, repo2)
 
         val apiService = mock<ApiService> {
-            onBlocking { getUserRepos(TEST_USERNAME) } doReturn rawRepoList
+            onBlocking { getUserRepos(TEST_USERNAME) } doReturn expectedRepoList
         }
 
         val repository = UserReposRepository(apiService, testDispatcherProvider)
@@ -39,9 +38,7 @@ class UserReposRepositoryTest {
             .toList()
 
         // THEN
-        actualRepoList
-            .shouldHaveSize(1)
-            .shouldContain(repo2)
+        actualRepoList.shouldBeEqualTo(expectedRepoList)
     }
 
     @Test(expected = IOException::class)
