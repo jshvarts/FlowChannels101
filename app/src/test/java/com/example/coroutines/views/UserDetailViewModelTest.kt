@@ -43,7 +43,7 @@ class UserDetailViewModelTest {
     }
 
     @Test
-    fun `should emit user details on success`() = rule.dispatcher.runBlockingTest {
+    private fun `should emit user details on success`() = rule.dispatcher.runBlockingTest {
         // GIVEN
         val userDetails = UserDetails(
             login = "someUsername",
@@ -73,7 +73,7 @@ class UserDetailViewModelTest {
     }
 
     @Test
-    fun `should emit error on user details lookup failure`() = rule.dispatcher.runBlockingTest {
+    private fun `should emit error on user details lookup failure`() = rule.dispatcher.runBlockingTest {
         // GIVEN
         val result = Result.failure<UserDetails>(Exception())
         val channel = Channel<Result<UserDetails>>()

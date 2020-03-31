@@ -29,7 +29,7 @@ class UserRepositoryTest {
     private val testDispatcherProvider = TestDispatcherProvider()
 
     @Test
-    fun `should get user details on success`() = runBlocking {
+    private fun `should get user details on success`() = runBlocking {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doReturn userDetails
@@ -48,7 +48,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `should get error for user details`() = runBlocking {
+    private fun `should get error for user details`() = runBlocking {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
@@ -68,7 +68,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
+    private fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
@@ -88,33 +88,34 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `should retry and second retry succeeded`() = testDispatcherProvider.runBlockingTest {
-        // GIVEN
-        var throwError = true
+    private fun `should retry and second retry succeeded`() =
+        testDispatcherProvider.runBlockingTest {
+            // GIVEN
+            var throwError = true
 
-        val apiService = mock<ApiService> {
-            onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
-                if (throwError) throw IOException() else userDetails
+            val apiService = mock<ApiService> {
+                onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
+                    if (throwError) throw IOException() else userDetails
+                }
             }
-        }
 
-        val repository = UserRepository(apiService, testDispatcherProvider)
+            val repository = UserRepository(apiService, testDispatcherProvider)
 
-        // WHEN
-        val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
+            // WHEN
+            val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
 
-        // THEN
-        launch {
-            flow.collect { result ->
-                result.isSuccess.shouldBeTrue()
+            // THEN
+            launch {
+                flow.collect { result ->
+                    result.isSuccess.shouldBeTrue()
+                }
             }
+
+            // 1st retry
+            advanceTimeBy(DELAY_ONE_SECOND)
+
+            // 2nd retry
+            throwError = false
+            advanceTimeBy(DELAY_ONE_SECOND)
         }
-
-        // 1st retry
-        advanceTimeBy(DELAY_ONE_SECOND)
-
-        // 2nd retry
-        throwError = false
-        advanceTimeBy(DELAY_ONE_SECOND)
-    }
 }

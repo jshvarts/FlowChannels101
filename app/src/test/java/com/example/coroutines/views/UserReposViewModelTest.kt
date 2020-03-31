@@ -47,7 +47,7 @@ class UserReposViewModelTest {
     }
 
     @Test
-    fun `should emit user repos on success`() = rule.dispatcher.runBlockingTest {
+    private fun `should emit user repos on success`() = rule.dispatcher.runBlockingTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
         val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
@@ -74,7 +74,7 @@ class UserReposViewModelTest {
     }
 
     @Test
-    fun `should emit error on repos lookup failure`() = rule.dispatcher.runBlockingTest {
+    private fun `should emit error on repos lookup failure`() = rule.dispatcher.runBlockingTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
         val channel = Channel<Repo>()
