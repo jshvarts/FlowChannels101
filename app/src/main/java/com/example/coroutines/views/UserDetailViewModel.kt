@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.UserRepository
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(
@@ -22,14 +22,12 @@ class UserDetailViewModel @Inject constructor(
 
     fun lookupUser(login: String) {
 
-        viewModelScope.launch {
-            val flow = userRepository.getUserDetails(login)
-            flow.collect { result: Result<UserDetails> ->
+        userRepository.getUserDetails(login)
+            .map { result: Result<UserDetails> ->
                 when {
                     result.isSuccess -> _userDetails.value = result.getOrNull()
                     result.isFailure -> _isError.value = true
                 }
-            }
-        }
+            }.launchIn(viewModelScope)
     }
 }
