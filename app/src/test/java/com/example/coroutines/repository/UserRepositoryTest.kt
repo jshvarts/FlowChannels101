@@ -29,7 +29,7 @@ class UserRepositoryTest {
     private val testDispatcherProvider = TestDispatcherProvider()
 
     @Test
-    private fun `should get user details on success`() = runBlocking {
+    fun `should get user details on success`() = runBlocking {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doReturn userDetails
@@ -48,7 +48,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    private fun `should get error for user details`() = runBlocking {
+    fun `should get error for user details`() = runBlocking {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
@@ -68,7 +68,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    private fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
+    fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
@@ -88,7 +88,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    private fun `should retry and second retry succeeded`() =
+    fun `should retry and second retry succeeded`() =
         testDispatcherProvider.runBlockingTest {
             // GIVEN
             var throwError = true

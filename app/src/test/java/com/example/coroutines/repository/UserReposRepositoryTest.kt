@@ -21,7 +21,7 @@ class UserReposRepositoryTest {
     private val testDispatcherProvider = TestDispatcherProvider()
 
     @Test
-    private fun `should get user repos on success`() = testDispatcherProvider.runBlockingTest {
+    fun `should get user repos on success`() = testDispatcherProvider.runBlockingTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 10)
         val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 55)
@@ -45,7 +45,7 @@ class UserReposRepositoryTest {
     }
 
     @Test(expected = IOException::class)
-    private fun `should throw error for user repos if non-HttpException`() =
+    fun `should throw error for user repos if non-HttpException`() =
         testDispatcherProvider.runBlockingTest {
             // GIVEN
             val apiService = mock<ApiService> {
