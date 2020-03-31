@@ -14,8 +14,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import org.amshove.kluent.shouldBeFalse
-import org.amshove.kluent.shouldBeTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -70,7 +68,6 @@ class UserReposViewModelTest {
         // THEN
         // TODO: even though flow.toList() is a terminal operator, the assertion below does not work
         // verify(userReposObserver).onChanged(listOf(repo1, repo2))
-        channel.isClosedForSend.shouldBeFalse()
     }
 
     @Test
@@ -95,6 +92,5 @@ class UserReposViewModelTest {
         // THEN
         verify(userReposObserver).onChanged(listOf(repo1))
         verify(isErrorObserver).onChanged(true)
-        channel.isClosedForSend.shouldBeTrue()
     }
 }
