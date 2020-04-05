@@ -49,8 +49,9 @@ class UserReposViewModelTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
         val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
+        val expectedRepoList = listOf(repo1, repo2)
 
-        val channel = Channel<Repo>()
+        val channel = Channel<List<Repo>>()
         val flow = channel.consumeAsFlow()
 
         doReturn(flow)
@@ -59,22 +60,22 @@ class UserReposViewModelTest {
 
         // WHEN
         launch {
-            channel.send(repo1)
-            channel.send(repo2)
+            channel.send(expectedRepoList)
         }
 
         userReposViewModel.lookupUserRepos(TEST_USERNAME)
 
         // THEN
-        // TODO: even though flow.toList() is a terminal operator, the assertion below does not work
-        // verify(userReposObserver).onChanged(listOf(repo1, repo2))
+        verify(userReposObserver).onChanged(expectedRepoList)
     }
 
     @Test
     fun `should emit error on repos lookup failure`() = rule.dispatcher.runBlockingTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
-        val channel = Channel<Repo>()
+        val expectedRepoList = listOf(repo1)
+
+        val channel = Channel<List<Repo>>()
         val flow = channel.consumeAsFlow()
 
         doReturn(flow)
@@ -83,14 +84,14 @@ class UserReposViewModelTest {
 
         // WHEN
         launch {
-            channel.send(repo1)
+            channel.send(expectedRepoList)
             channel.close(IOException())
         }
 
         userReposViewModel.lookupUserRepos(TEST_USERNAME)
 
         // THEN
-        verify(userReposObserver).onChanged(listOf(repo1))
+        verify(userReposObserver).onChanged(expectedRepoList)
         verify(isErrorObserver).onChanged(true)
     }
 }

@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.repository.UserReposRepository
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,15 +25,16 @@ class UserReposViewModel @Inject constructor(
     fun lookupUserRepos(login: String) {
 
         viewModelScope.launch {
-            _userRepos.value = userReposRepository.getUserRepos(login)
+            userReposRepository.getUserRepos(login)
                 .catch {
                     Timber.e(it.localizedMessage, "error getting user repos")
                     _isError.value = true
                 }
-                .toList()
-                .sortedByDescending { it.stars }
-                .also {
-                    Timber.i("success getting user repos: $it")
+                .collect { data ->
+                    _userRepos.value = data.sortedByDescending { it.stars }
+                        .also {
+                            Timber.i("success getting user repos: $it")
+                        }
                 }
         }
     }
