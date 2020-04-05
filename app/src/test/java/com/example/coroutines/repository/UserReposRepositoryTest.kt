@@ -6,7 +6,7 @@ import com.example.coroutines.repository.api.ApiService
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.amshove.kluent.shouldBeEmpty
@@ -25,7 +25,6 @@ class UserReposRepositoryTest {
         // GIVEN
         val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 10)
         val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 55)
-
         val expectedRepoList = listOf(repo1, repo2)
 
         val apiService = mock<ApiService> {
@@ -35,11 +34,12 @@ class UserReposRepositoryTest {
         val repository = UserReposRepository(apiService, testDispatcher)
 
         // WHEN
-        val actualRepoList = repository.getUserRepos(TEST_USERNAME)
-            .toList()
+        val flow = repository.getUserRepos(TEST_USERNAME)
 
         // THEN
-        actualRepoList.shouldBeEqualTo(expectedRepoList)
+        flow.collect { actualRepoList: List<Repo> ->
+            actualRepoList.shouldBeEqualTo(expectedRepoList)
+        }
     }
 
     @Test(expected = IOException::class)
@@ -54,10 +54,12 @@ class UserReposRepositoryTest {
 
             val repository = UserReposRepository(apiService, testDispatcher)
 
-            // WHEN/THEN
-            val actualRepoList = repository.getUserRepos(TEST_USERNAME)
-                .toList()
+            // WHEN
+            val flow = repository.getUserRepos(TEST_USERNAME)
 
-            actualRepoList.shouldBeEmpty()
+            // THEN
+            flow.collect { actualRepoList: List<Repo> ->
+                actualRepoList.shouldBeEmpty()
+            }
         }
 }
