@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -89,7 +88,8 @@ class UserReposFragment : Fragment() {
     }
 
     private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
-        val bundle = bundleOf("username" to repoOwner.login)
-        findNavController().navigate(R.id.action_repos_to_user_details, bundle)
+        val action = UserReposFragmentDirections
+            .actionReposToUserDetails(repoOwner.login)
+        findNavController().navigate(action)
     }
 }

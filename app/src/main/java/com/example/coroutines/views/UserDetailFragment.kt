@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.example.coroutines.CoroutinesApp
 import com.example.coroutines.R
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,7 @@ import javax.inject.Inject
 private const val AVATAR_WIDTH = 250
 
 class UserDetailFragment : Fragment() {
+    private val args by navArgs<UserDetailFragmentArgs>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -65,9 +67,6 @@ class UserDetailFragment : Fragment() {
             }
         })
 
-        val username = arguments?.getString("username")
-            ?: throw IllegalArgumentException("Expected username in bundle")
-
-        viewModel.lookupUser(username)
+        viewModel.lookupUser(args.username)
     }
 }

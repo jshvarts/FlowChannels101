@@ -13,13 +13,7 @@
 
         <action
             android:id="@+id/action_repos_to_user_details"
-            app:destination="@id/userDetailsFragment">
-
-            <argument
-                android:name="username"
-                app:argType="string" />
-
-        </action>
+            app:destination="@+id/userDetailsFragment" />
 
     </fragment>
 
@@ -27,6 +21,11 @@
         android:id="@+id/userDetailsFragment"
         android:name="com.example.coroutines.views.UserDetailFragment"
         android:label="@string/nav_title_user_details"
-        tools:layout="@layout/user_details_fragment" />
+        tools:layout="@layout/user_details_fragment">
+
+        <argument
+            android:name="username"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

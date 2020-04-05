@@ -56,8 +56,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     // Navigation component
-    implementation "androidx.navigation:navigation-fragment-ktx:2.2.1"
-    implementation "androidx.navigation:navigation-ui-ktx:2.2.1"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
 
     // Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
