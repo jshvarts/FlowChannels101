@@ -23,9 +23,8 @@ class RepoAdapter(private val clickListener: RepoOwnerClickListener) :
     }
 
     override fun onBindViewHolder(holder: RepoViewHolder, position: Int) {
-        getItem(position).run {
-            holder.bindTo(this)
-        }
+        val repo = getItem(position)
+        holder.bindTo(repo)
     }
 }
 

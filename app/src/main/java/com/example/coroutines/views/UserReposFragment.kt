@@ -60,19 +60,17 @@ class UserReposFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
-            println("success getting user repos: $it")
             recyclerViewAdapter.submitList(it)
         })
 
         viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (isError) {
-                println("error getting user repos")
-                Snackbar.make(
-                    userReposContainer,
-                    R.string.error_message,
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
+            if (!isError) return@Observer
+
+            Snackbar.make(
+                userReposContainer,
+                R.string.error_message,
+                Snackbar.LENGTH_LONG
+            ).show()
         })
 
         viewModel.lookupUserRepos("JakeWharton")

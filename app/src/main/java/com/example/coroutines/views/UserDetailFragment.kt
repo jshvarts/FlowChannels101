@@ -44,8 +44,6 @@ class UserDetailFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.userDetails.observe(viewLifecycleOwner, Observer { userDetails ->
-            println("success getting user details: $userDetails")
-
             Picasso.get()
                 .load(userDetails.avatarUrl)
                 .resize(AVATAR_WIDTH, AVATAR_WIDTH)
@@ -57,14 +55,13 @@ class UserDetailFragment : Fragment() {
         })
 
         viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (isError) {
-                println("error getting user details")
-                Snackbar.make(
-                    userDetailsContainer,
-                    R.string.error_message,
-                    Snackbar.LENGTH_LONG
-                ).show()
-            }
+            if (!isError) return@Observer
+
+            Snackbar.make(
+                userDetailsContainer,
+                R.string.error_message,
+                Snackbar.LENGTH_LONG
+            ).show()
         })
 
         viewModel.lookupUser(args.username)

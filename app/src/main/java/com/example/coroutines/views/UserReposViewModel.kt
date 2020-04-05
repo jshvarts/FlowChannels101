@@ -9,6 +9,7 @@ import com.example.coroutines.repository.UserReposRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserReposViewModel @Inject constructor(
@@ -18,7 +19,7 @@ class UserReposViewModel @Inject constructor(
     private val _userRepos = MutableLiveData<List<Repo>>()
     val userRepos: LiveData<List<Repo>> = _userRepos
 
-    private val _isError = MutableLiveData<Boolean>(false)
+    private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
     fun lookupUserRepos(login: String) {
@@ -26,10 +27,14 @@ class UserReposViewModel @Inject constructor(
         viewModelScope.launch {
             _userRepos.value = userReposRepository.getUserRepos(login)
                 .catch {
+                    Timber.e(it.localizedMessage, "error getting user repos")
                     _isError.value = true
                 }
                 .toList()
                 .sortedByDescending { it.stars }
+                .also {
+                    Timber.i("success getting user repos: $it")
+                }
         }
     }
 

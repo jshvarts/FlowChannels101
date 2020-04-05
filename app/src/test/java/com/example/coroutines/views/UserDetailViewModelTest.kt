@@ -75,7 +75,7 @@ class UserDetailViewModelTest {
     @Test
     fun `should emit error on user details lookup failure`() = rule.dispatcher.runBlockingTest {
         // GIVEN
-        val result = Result.failure<UserDetails>(Exception())
+        val result = Result.failure<UserDetails>(RuntimeException())
         val channel = Channel<Result<UserDetails>>()
         val flow = channel.consumeAsFlow()
 

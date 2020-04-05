@@ -6,8 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.UserRepository
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class UserDetailViewModel @Inject constructor(
@@ -22,12 +23,21 @@ class UserDetailViewModel @Inject constructor(
 
     fun lookupUser(login: String) {
 
-        userRepository.getUserDetails(login)
-            .map { result: Result<UserDetails> ->
-                when {
-                    result.isSuccess -> _userDetails.value = result.getOrNull()
-                    result.isFailure -> _isError.value = true
+        viewModelScope.launch {
+            userRepository.getUserDetails(login)
+                .collect { result ->
+                    when {
+                        result.isSuccess -> {
+                            _userDetails.value = result.getOrNull().also { data ->
+                                Timber.i("success getting user details: $data")
+                            }
+                        }
+                        result.isFailure -> {
+                            Timber.e(result.exceptionOrNull(), "error getting user details")
+                            _isError.value = true
+                        }
+                    }
                 }
-            }.launchIn(viewModelScope)
+        }
     }
 }
