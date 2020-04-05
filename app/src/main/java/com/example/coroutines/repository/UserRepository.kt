@@ -1,8 +1,9 @@
 package com.example.coroutines.repository
 
+import com.example.coroutines.di.IoDispatcher
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.api.ApiService
-import com.example.coroutines.threading.DispatcherProvider
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -10,12 +11,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.retry
 import java.io.IOException
+import javax.inject.Inject
 
 const val DELAY_ONE_SECOND = 1_000L
 
-class UserRepository(
+class UserRepository @Inject constructor(
     private val apiService: ApiService,
-    private val dispatchers: DispatcherProvider
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
 
     fun getUserDetails(login: String): Flow<Result<UserDetails>> {
@@ -24,7 +26,7 @@ class UserRepository(
             emit(Result.success(userDetails))
         }
             .catch { emit(Result.failure(it)) }
-            .flowOn(dispatchers.io)
+            .flowOn(ioDispatcher)
     }
 
     fun getUserDetailsRetryIfFailed(login: String): Flow<Result<UserDetails>> {
@@ -37,6 +39,6 @@ class UserRepository(
             }
         }
             .catch { emit(Result.failure(it)) }
-            .flowOn(dispatchers.io)
+            .flowOn(ioDispatcher)
     }
 }

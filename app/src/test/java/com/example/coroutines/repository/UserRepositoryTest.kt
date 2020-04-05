@@ -2,13 +2,14 @@ package com.example.coroutines.repository
 
 import com.example.coroutines.domain.UserDetails
 import com.example.coroutines.repository.api.ApiService
-import com.example.coroutines.threading.TestDispatcherProvider
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.amshove.kluent.shouldBeEqualTo
 import org.amshove.kluent.shouldBeTrue
 import org.junit.Test
@@ -26,7 +27,7 @@ class UserRepositoryTest {
         company = "someCompany"
     )
 
-    private val testDispatcherProvider = TestDispatcherProvider()
+    private val testDispatcher = TestCoroutineDispatcher()
 
     @Test
     fun `should get user details on success`() = runBlocking {
@@ -35,7 +36,7 @@ class UserRepositoryTest {
             onBlocking { getUserDetails(TEST_USERNAME) } doReturn userDetails
         }
 
-        val repository = UserRepository(apiService, testDispatcherProvider)
+        val repository = UserRepository(apiService, testDispatcher)
 
         // WHEN
         val flow = repository.getUserDetails(TEST_USERNAME)
@@ -56,7 +57,7 @@ class UserRepositoryTest {
             }
         }
 
-        val repository = UserRepository(apiService, testDispatcherProvider)
+        val repository = UserRepository(apiService, testDispatcher)
 
         // WHEN
         val flow = repository.getUserDetails(TEST_USERNAME)
@@ -68,7 +69,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `should retry and all retries failed`() = testDispatcherProvider.runBlockingTest {
+    fun `should retry and all retries failed`() = testDispatcher.runBlockingTest {
         // GIVEN
         val apiService = mock<ApiService> {
             onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
@@ -76,7 +77,7 @@ class UserRepositoryTest {
             }
         }
 
-        val repository = UserRepository(apiService, testDispatcherProvider)
+        val repository = UserRepository(apiService, testDispatcher)
 
         // WHEN
         val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
@@ -88,34 +89,33 @@ class UserRepositoryTest {
     }
 
     @Test
-    fun `should retry and second retry succeeded`() =
-        testDispatcherProvider.runBlockingTest {
-            // GIVEN
-            var throwError = true
+    fun `should retry and second retry succeeded`() = testDispatcher.runBlockingTest {
+        // GIVEN
+        var throwError = true
 
-            val apiService = mock<ApiService> {
-                onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
-                    if (throwError) throw IOException() else userDetails
-                }
+        val apiService = mock<ApiService> {
+            onBlocking { getUserDetails(TEST_USERNAME) } doAnswer {
+                if (throwError) throw IOException() else userDetails
             }
-
-            val repository = UserRepository(apiService, testDispatcherProvider)
-
-            // WHEN
-            val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
-
-            // THEN
-            launch {
-                flow.collect { result ->
-                    result.isSuccess.shouldBeTrue()
-                }
-            }
-
-            // 1st retry
-            advanceTimeBy(DELAY_ONE_SECOND)
-
-            // 2nd retry
-            throwError = false
-            advanceTimeBy(DELAY_ONE_SECOND)
         }
+
+        val repository = UserRepository(apiService, testDispatcher)
+
+        // WHEN
+        val flow = repository.getUserDetailsRetryIfFailed(TEST_USERNAME)
+
+        // THEN
+        launch {
+            flow.collect { result ->
+                result.isSuccess.shouldBeTrue()
+            }
+        }
+
+        // 1st retry
+        advanceTimeBy(DELAY_ONE_SECOND)
+
+        // 2nd retry
+        throwError = false
+        advanceTimeBy(DELAY_ONE_SECOND)
+    }
 }
