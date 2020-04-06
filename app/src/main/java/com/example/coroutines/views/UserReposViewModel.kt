@@ -4,10 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.coroutines.domain.MinStarCount
+import com.example.coroutines.domain.NoMinStarCount
 import com.example.coroutines.domain.Repo
 import com.example.coroutines.repository.UserReposRepository
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,16 +30,30 @@ class UserReposViewModel @Inject constructor(
     private val _isError = MutableLiveData<Boolean>()
     val isError: LiveData<Boolean> = _isError
 
-    fun lookupUserRepos(login: String) {
+    private val _showSpinner = MutableLiveData<Boolean>(false)
+    val showSpinner: LiveData<Boolean> = _showSpinner
 
+    private val filterByStarCountChannel = ConflatedBroadcastChannel(NoMinStarCount)
+
+    fun lookupUserRepos(username: String) {
         viewModelScope.launch {
-            userReposRepository.getUserRepos(login)
-                .catch {
+            filterByStarCountChannel.asFlow()
+                .flatMapLatest { minStarCount ->
+                    userReposRepository.getUserRepos(username)
+                        .map { repoList ->
+                            repoList.filter { repo ->
+                                repo.stars >= minStarCount.stars
+                            }
+                        }
+                }.onStart {
+                    _showSpinner.value = true
+                }.onEach {
+                    _showSpinner.value = false
+                }.catch {
                     Timber.e(it.localizedMessage, "error getting user repos")
                     _isError.value = true
-                }
-                .collect { data ->
-                    _userRepos.value = data.sortedByDescending { it.stars }
+                }.collect { repoList ->
+                    _userRepos.value = repoList.sortedBy { it.stars }
                         .also {
                             Timber.i("success getting user repos: $it")
                         }
@@ -39,7 +61,8 @@ class UserReposViewModel @Inject constructor(
         }
     }
 
-    fun changeSortOrder() {
-        // TODO handle sort request
+    fun filterRepos(minStarCount: MinStarCount) {
+        filterByStarCountChannel.offer(minStarCount)
     }
 }
+

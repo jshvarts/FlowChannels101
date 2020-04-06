@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -15,12 +16,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.coroutines.CoroutinesApp
 import com.example.coroutines.R
+import com.example.coroutines.domain.MinStarCount
+import com.example.coroutines.domain.NoMinStarCount
 import com.example.coroutines.domain.RepoOwner
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.user_repos_fragment.*
 import javax.inject.Inject
 
 private const val GRID_COLUMN_COUNT = 2
+private const val STAR_COUNT_OVER_1_000 = 1_000
+private const val STAR_COUNT_OVER_100 = 100
 
 class UserReposFragment : Fragment() {
 
@@ -50,7 +55,7 @@ class UserReposFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        repos.apply {
+        reposRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
@@ -73,6 +78,10 @@ class UserReposFragment : Fragment() {
             ).show()
         })
 
+        viewModel.showSpinner.observe(viewLifecycleOwner, Observer { isSpinnerVisible ->
+            spinner.isVisible = isSpinnerVisible
+        })
+
         viewModel.lookupUserRepos("JakeWharton")
     }
 
@@ -81,8 +90,21 @@ class UserReposFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        viewModel.changeSortOrder()
-        return true
+        return when (item.itemId) {
+            R.id.over1000Stars -> {
+                viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_1_000))
+                true
+            }
+            R.id.over100Stars -> {
+                viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_100))
+                true
+            }
+            R.id.allStars -> {
+                viewModel.filterRepos(NoMinStarCount)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
