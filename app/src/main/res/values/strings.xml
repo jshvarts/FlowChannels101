@@ -8,5 +8,7 @@
     </plurals>
     <string name="user_company">Company: %s</string>
     <string name="error_message">Error occurred. Check logs for details</string>
-    <string name="sort">Sort</string>
+    <string name="over_1000_stars">1000+ stars</string>
+    <string name="over_100_stars">100+ stars</string>
+    <string name="all_stars">All</string>
 </resources>

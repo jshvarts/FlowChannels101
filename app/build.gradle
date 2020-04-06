@@ -40,7 +40,10 @@ android {
     }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile).all {
-        kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi"]
+        kotlinOptions.freeCompilerArgs += [
+                "-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-XXLanguage:+InlineClasses"
+        ]
     }
 }
 
@@ -94,3 +97,4 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'org.amshove.kluent:kluent:1.60'
 }
+
