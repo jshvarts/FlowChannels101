@@ -5,7 +5,7 @@
     android:id="@+id/userDetailsContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.UserDetailFragment">
+    tools:context=".ui.UserDetailFragment">
 
     <ImageView
         android:id="@+id/avatarImageView"
