@@ -1,4 +1,4 @@
-package com.example.coroutines.views
+package com.example.coroutines.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

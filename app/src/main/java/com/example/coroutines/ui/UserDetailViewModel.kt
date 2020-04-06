@@ -1,4 +1,4 @@
-package com.example.coroutines.views
+package com.example.coroutines.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

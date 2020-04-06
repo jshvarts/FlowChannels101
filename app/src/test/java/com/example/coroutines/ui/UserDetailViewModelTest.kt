@@ -1,4 +1,4 @@
-package com.example.coroutines.views
+package com.example.coroutines.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer

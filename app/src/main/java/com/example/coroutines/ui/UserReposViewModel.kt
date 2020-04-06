@@ -1,4 +1,4 @@
-package com.example.coroutines.views
+package com.example.coroutines.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,7 +50,7 @@ class UserReposViewModel @Inject constructor(
                 }.onEach {
                     _showSpinner.value = false
                 }.catch {
-                    Timber.e(it.localizedMessage, "error getting user repos")
+                    Timber.e(it, "error getting user repos")
                     _isError.value = true
                 }.collect { repoList ->
                     _userRepos.value = repoList.sortedBy { it.stars }

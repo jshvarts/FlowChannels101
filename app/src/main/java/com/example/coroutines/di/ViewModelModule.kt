@@ -2,8 +2,8 @@ package com.example.coroutines.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.coroutines.views.UserDetailViewModel
-import com.example.coroutines.views.UserReposViewModel
+import com.example.coroutines.ui.UserDetailViewModel
+import com.example.coroutines.ui.UserReposViewModel
 import dagger.Binds
 import dagger.MapKey
 import dagger.Module
