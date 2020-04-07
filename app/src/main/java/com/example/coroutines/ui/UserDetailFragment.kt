@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.coroutines.CoroutinesApp
 import com.example.coroutines.R
+import com.example.coroutines.databinding.UserDetailsFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.user_details_fragment.*
 import javax.inject.Inject
 
 private const val AVATAR_WIDTH = 250
@@ -26,6 +26,9 @@ class UserDetailFragment : Fragment() {
 
     private val viewModel: UserDetailViewModel by viewModels { viewModelFactory }
 
+    private var _binding: UserDetailsFragmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (requireActivity().application as CoroutinesApp)
@@ -37,7 +40,8 @@ class UserDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.user_details_fragment, container, false)
+        _binding = UserDetailsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -48,22 +52,27 @@ class UserDetailFragment : Fragment() {
                 .load(userDetails.avatarUrl)
                 .resize(AVATAR_WIDTH, AVATAR_WIDTH)
                 .centerCrop()
-                .into(avatarImageView)
+                .into(binding.avatarImageView)
 
-            userFullName.text = userDetails.name
-            userCompany.text = getString(R.string.user_company, userDetails.company)
+            binding.userFullName.text = userDetails.name
+            binding.userCompany.text = getString(R.string.user_company, userDetails.company)
         })
 
         viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
             if (!isError) return@Observer
 
             Snackbar.make(
-                userDetailsContainer,
+                binding.root,
                 R.string.error_message,
                 Snackbar.LENGTH_LONG
             ).show()
         })
 
         viewModel.lookupUser(args.username)
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }

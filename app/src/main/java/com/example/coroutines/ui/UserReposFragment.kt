@@ -16,11 +16,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.coroutines.CoroutinesApp
 import com.example.coroutines.R
+import com.example.coroutines.databinding.UserReposFragmentBinding
 import com.example.coroutines.domain.MinStarCount
 import com.example.coroutines.domain.NoMinStarCount
 import com.example.coroutines.domain.RepoOwner
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.user_repos_fragment.*
 import javax.inject.Inject
 
 private const val GRID_COLUMN_COUNT = 2
@@ -38,6 +38,9 @@ class UserReposFragment : Fragment() {
 
     private val viewModel: UserReposViewModel by viewModels { viewModelFactory }
 
+    private var _binding: UserReposFragmentBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -47,15 +50,18 @@ class UserReposFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        return inflater.inflate(R.layout.user_repos_fragment, container, false)
+    ): View? {
+        _binding = UserReposFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        reposRecyclerView.apply {
+
+        binding.reposRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
@@ -72,14 +78,14 @@ class UserReposFragment : Fragment() {
             if (!isError) return@Observer
 
             Snackbar.make(
-                userReposContainer,
+                binding.root,
                 R.string.error_message,
                 Snackbar.LENGTH_LONG
             ).show()
         })
 
         viewModel.showSpinner.observe(viewLifecycleOwner, Observer { isSpinnerVisible ->
-            spinner.isVisible = isSpinnerVisible
+            binding.spinner.isVisible = isSpinnerVisible
         })
 
         viewModel.lookupUserRepos("JakeWharton")
@@ -105,6 +111,11 @@ class UserReposFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 
     private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
