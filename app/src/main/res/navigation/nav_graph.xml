@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/userReposFragment"
-        android:name="com.example.coroutines.ui.UserReposFragment"
+        android:name="com.jshvarts.coroutines.ui.UserReposFragment"
         android:label="@string/nav_title_repos"
         tools:layout="@layout/user_repos_fragment">
 
@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/userDetailsFragment"
-        android:name="com.example.coroutines.ui.UserDetailFragment"
+        android:name="com.jshvarts.coroutines.ui.UserDetailFragment"
         android:label="@string/nav_title_user_details"
         tools:layout="@layout/user_details_fragment">
 
