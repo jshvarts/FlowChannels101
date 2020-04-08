@@ -9,10 +9,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.UserDetailsFragmentBinding
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
@@ -44,8 +44,8 @@ class UserDetailFragment : Fragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel.userDetails.observe(viewLifecycleOwner, Observer { userDetails ->
             Picasso.get()

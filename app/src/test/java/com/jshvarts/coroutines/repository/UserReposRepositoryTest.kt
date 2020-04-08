@@ -43,7 +43,7 @@ class UserReposRepositoryTest {
     }
 
     @Test(expected = IOException::class)
-    fun `should throw error for user repos if non-HttpException`() =
+    fun `should throw error for user repos if any exception is thrown`() =
         testDispatcher.runBlockingTest {
             // GIVEN
             val apiService = mock<ApiService> {

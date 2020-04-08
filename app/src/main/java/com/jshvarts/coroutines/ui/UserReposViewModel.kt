@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,8 +36,6 @@ class UserReposViewModel @Inject constructor(
     private val filterByStarCountChannel = ConflatedBroadcastChannel(NoMinStarCount)
 
     fun lookupUserRepos(username: String) {
-        _showSpinner.value = true
-
         viewModelScope.launch {
             filterByStarCountChannel.asFlow()
                 .flatMapLatest { minStarCount ->
@@ -46,10 +45,12 @@ class UserReposViewModel @Inject constructor(
                                 repo.stars >= minStarCount.stars
                             }
                         }
-                }.onEach {
+                }.onStart {
+                    _showSpinner.value = true
+                }
+                .onEach {
                     _showSpinner.value = false
                 }.catch {
-                    Timber.e(it, "error getting user repos")
                     _isError.value = true
                 }.collect { repoList ->
                     _userRepos.value = repoList.sortedBy { it.stars }
