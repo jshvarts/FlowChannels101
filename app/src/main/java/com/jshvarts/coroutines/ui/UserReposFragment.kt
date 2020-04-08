@@ -29,9 +29,7 @@ private const val STAR_COUNT_OVER_100 = 100
 
 class UserReposFragment : Fragment() {
 
-    private val repoOwnerClickListener = this::onRepoOwnerClicked
-
-    private val recyclerViewAdapter = RepoAdapter(repoOwnerClickListener)
+    private val recyclerViewAdapter = RepoAdapter { onRepoOwnerClicked(it) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -97,15 +95,15 @@ class UserReposFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.over1000Stars -> {
+            R.id.over_1000_stars -> {
                 viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_1_000))
                 true
             }
-            R.id.over100Stars -> {
+            R.id.over_100_stars -> {
                 viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_100))
                 true
             }
-            R.id.allStars -> {
+            R.id.any_stars -> {
                 viewModel.filterRepos(NoMinStarCount)
                 true
             }
