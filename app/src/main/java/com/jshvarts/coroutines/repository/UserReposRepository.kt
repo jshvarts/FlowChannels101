@@ -5,10 +5,8 @@ import com.jshvarts.coroutines.domain.Repo
 import com.jshvarts.coroutines.repository.api.ApiService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class UserReposRepository @Inject constructor(
@@ -20,7 +18,8 @@ class UserReposRepository @Inject constructor(
         return flow {
             emit(apiService.getUserRepos(login))
         }
-            .catch { if (it !is HttpException) throw it }
+            // this is just to illustrate how dispatcher on which the work is done is controlled.
+            // Retrofit suspend functions are already doing work on io dispatcher
             .flowOn(ioDispatcher)
     }
 }

@@ -58,6 +58,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.2.4'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 
     // Navigation component
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"

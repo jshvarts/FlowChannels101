@@ -7,7 +7,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -26,6 +25,8 @@ import javax.inject.Inject
 private const val GRID_COLUMN_COUNT = 2
 private const val STAR_COUNT_OVER_1_000 = 1_000
 private const val STAR_COUNT_OVER_100 = 100
+
+private const val DEFAULT_USERNAME = "JakeWharton"
 
 class UserReposFragment : Fragment() {
 
@@ -63,10 +64,6 @@ class UserReposFragment : Fragment() {
             adapter = recyclerViewAdapter
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         viewModel.userRepos.observe(viewLifecycleOwner, Observer {
             recyclerViewAdapter.submitList(it)
@@ -82,11 +79,15 @@ class UserReposFragment : Fragment() {
             ).show()
         })
 
-        viewModel.showSpinner.observe(viewLifecycleOwner, Observer { isSpinnerVisible ->
-            binding.spinner.isVisible = isSpinnerVisible
+        viewModel.showSpinner.observe(viewLifecycleOwner, Observer { showSpinner ->
+            binding.pullToRefresh.isRefreshing = showSpinner
         })
 
-        viewModel.lookupUserRepos("JakeWharton")
+        viewModel.lookupUserRepos(DEFAULT_USERNAME)
+
+        binding.pullToRefresh.setOnRefreshListener {
+            viewModel.lookupUserRepos(DEFAULT_USERNAME)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
