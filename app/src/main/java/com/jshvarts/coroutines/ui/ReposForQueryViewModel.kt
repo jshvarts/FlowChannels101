@@ -8,7 +8,7 @@ import com.jshvarts.coroutines.domain.Repo
 import com.jshvarts.coroutines.repository.ReposForQueryRepository
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,10 +31,9 @@ class ReposForQueryViewModel @Inject constructor(
             reposForQueryRepository.getReposForQuery(query)
                 .onStart {
                     _showSpinner.value = true
-                }.onEach {
+                }.onCompletion {
                     _showSpinner.value = false
                 }.catch {
-                    _showSpinner.value = false
                     _isError.value = true
                 }.collect { repoList ->
                     _repos.value = repoList.sortedByDescending { it.stars }

@@ -9,3 +9,7 @@ data class Repo(
     val owner: RepoOwner,
     @Json(name = "stargazers_count") val stars: Int
 )
+
+inline class MinStarCount(val value: Int)
+
+val NoMinStarCount = MinStarCount(0)
