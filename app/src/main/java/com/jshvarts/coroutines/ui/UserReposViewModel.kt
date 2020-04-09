@@ -41,16 +41,14 @@ class UserReposViewModel @Inject constructor(
                 .flatMapLatest { minStarCount ->
                     userReposRepository.getUserRepos(username)
                         .map { repoList ->
-                            repoList.filter { repo ->
-                                repo.stars >= minStarCount.stars
-                            }
+                            repoList.filter { it.stars >= minStarCount.stars }
                         }
                 }.onStart {
                     _showSpinner.value = true
-                }
-                .onEach {
+                }.onEach {
                     _showSpinner.value = false
                 }.catch {
+                    _showSpinner.value = false
                     _isError.value = true
                 }.collect { repoList ->
                     _userRepos.value = repoList.sortedBy { it.stars }

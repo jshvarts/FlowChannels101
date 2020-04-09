@@ -2,9 +2,6 @@ package com.jshvarts.coroutines.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -16,28 +13,23 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
-import com.jshvarts.coroutines.databinding.UserReposFragmentBinding
-import com.jshvarts.coroutines.domain.MinStarCount
-import com.jshvarts.coroutines.domain.NoMinStarCount
+import com.jshvarts.coroutines.databinding.ReposForQueryFragmentBinding
 import com.jshvarts.coroutines.domain.RepoOwner
 import javax.inject.Inject
 
 private const val GRID_COLUMN_COUNT = 2
-private const val STAR_COUNT_OVER_1_000 = 1_000
-private const val STAR_COUNT_OVER_100 = 100
+private const val DEFAULT_QUERY = "kotlin"
 
-private const val DEFAULT_USERNAME = "JakeWharton"
+class ReposForQueryFragment : Fragment() {
 
-class UserReposFragment : Fragment() {
-
-    private val recyclerViewAdapter = UserRepoAdapter()
+    private val recyclerViewAdapter = RepoAdapter { onRepoOwnerClicked(it) }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: UserReposViewModel by viewModels { viewModelFactory }
+    private val viewModel: ReposForQueryViewModel by viewModels { viewModelFactory }
 
-    private var _binding: UserReposFragmentBinding? = null
+    private var _binding: ReposForQueryFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,19 +45,19 @@ class UserReposFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = UserReposFragmentBinding.inflate(inflater, container, false)
+        _binding = ReposForQueryFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.reposRecyclerView.apply {
+        binding.reposForQueryRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
 
-        viewModel.userRepos.observe(viewLifecycleOwner, Observer {
+        viewModel.repos.observe(viewLifecycleOwner, Observer {
             recyclerViewAdapter.submitList(it)
         })
 
@@ -83,32 +75,10 @@ class UserReposFragment : Fragment() {
             binding.pullToRefresh.isRefreshing = showSpinner
         })
 
-        viewModel.lookupUserRepos(DEFAULT_USERNAME)
+        viewModel.lookupRepos(DEFAULT_QUERY)
 
         binding.pullToRefresh.setOnRefreshListener {
-            viewModel.lookupUserRepos(DEFAULT_USERNAME)
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.repos_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.over_1000_stars -> {
-                viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_1_000))
-                true
-            }
-            R.id.over_100_stars -> {
-                viewModel.filterRepos(MinStarCount(STAR_COUNT_OVER_100))
-                true
-            }
-            R.id.any_stars -> {
-                viewModel.filterRepos(NoMinStarCount)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+            viewModel.lookupRepos(DEFAULT_QUERY)
         }
     }
 

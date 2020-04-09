@@ -2,6 +2,7 @@ package com.jshvarts.coroutines.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.jshvarts.coroutines.ui.ReposForQueryViewModel
 import com.jshvarts.coroutines.ui.UserDetailViewModel
 import com.jshvarts.coroutines.ui.UserReposViewModel
 import dagger.Binds
@@ -24,6 +25,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserReposViewModel::class)
     abstract fun bindUserReposViewModel(view: UserReposViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ReposForQueryViewModel::class)
+    abstract fun bindReposForQueryViewModel(view: ReposForQueryViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

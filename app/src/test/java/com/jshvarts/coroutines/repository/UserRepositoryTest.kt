@@ -23,8 +23,7 @@ class UserRepositoryTest {
         login = TEST_USERNAME,
         id = 1,
         avatarUrl = "someAvatarUrl",
-        name = "someName",
-        company = "someCompany"
+        name = "someName"
     )
 
     private val testDispatcher = TestCoroutineDispatcher()
