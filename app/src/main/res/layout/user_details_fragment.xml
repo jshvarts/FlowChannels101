@@ -20,21 +20,25 @@
         android:id="@+id/userFullName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="24sp"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toBottomOf="@id/avatarImageView"
         app:layout_constraintStart_toEndOf="@id/avatarImageView"
         app:layout_constraintTop_toTopOf="@id/avatarImageView"
         tools:text="Some User" />
 
-    <TextView
-        android:id="@+id/userCompany"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/userReposButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@id/userFullName"
-        app:layout_constraintTop_toBottomOf="@id/userFullName"
-        tools:text="Some Company" />
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:text="@string/user_repos_button_text"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatarImageView"
+        tools:text="User Repos" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
@@ -55,7 +56,6 @@ class UserDetailFragment : Fragment() {
                 .into(binding.avatarImageView)
 
             binding.userFullName.text = userDetails.name
-            binding.userCompany.text = getString(R.string.user_company, userDetails.company)
         })
 
         viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
@@ -69,6 +69,12 @@ class UserDetailFragment : Fragment() {
         })
 
         viewModel.lookupUser(args.username)
+
+        binding.userReposButton.setOnClickListener {
+            val action = UserDetailFragmentDirections
+                .actionUserDetailsToUserRepos(args.username)
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {

@@ -49,8 +49,7 @@ class UserDetailViewModelTest {
             login = "someUsername",
             id = 1,
             avatarUrl = "someAvatarUrl",
-            name = "someName",
-            company = "someCompany"
+            name = "someName"
         )
 
         val result = Result.success(userDetails)

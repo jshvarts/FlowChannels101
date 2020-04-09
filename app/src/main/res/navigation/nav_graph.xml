@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/userReposFragment">
+    app:startDestination="@id/reposForQueryFragment">
 
     <fragment
-        android:id="@+id/userReposFragment"
-        android:name="com.jshvarts.coroutines.ui.UserReposFragment"
+        android:id="@+id/reposForQueryFragment"
+        android:name="com.jshvarts.coroutines.ui.ReposForQueryFragment"
         android:label="@string/nav_title_repos"
-        tools:layout="@layout/user_repos_fragment">
+        tools:layout="@layout/repos_for_query_fragment">
 
         <action
             android:id="@+id/action_repos_to_user_details"
@@ -22,6 +22,25 @@
         android:name="com.jshvarts.coroutines.ui.UserDetailFragment"
         android:label="@string/nav_title_user_details"
         tools:layout="@layout/user_details_fragment">
+
+        <argument
+            android:name="username"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_user_details_to_user_repos"
+            app:destination="@+id/userReposFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/userReposFragment"
+        android:name="com.jshvarts.coroutines.ui.UserReposFragment"
+        android:label="@string/nav_title_user_repos"
+        tools:layout="@layout/user_repos_fragment">
+
+        <action
+            android:id="@+id/action_repos_to_user_details"
+            app:destination="@+id/userDetailsFragment" />
 
         <argument
             android:name="username"

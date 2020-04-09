@@ -1,6 +1,9 @@
 package com.jshvarts.coroutines.di
 
+import com.jshvarts.coroutines.domain.ReposJsonConverter
 import com.jshvarts.coroutines.repository.api.ApiService
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -21,9 +24,14 @@ class NetworkModule {
         val okHttpBuilder = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
 
+        val moshi = Moshi.Builder()
+            .add(ReposJsonConverter())
+            .add(KotlinJsonAdapterFactory())
+            .build()
+
         return Retrofit.Builder()
             .baseUrl(GITHUB_BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpBuilder.build())
             .build()
             .create(ApiService::class.java)
