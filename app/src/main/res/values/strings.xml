@@ -12,4 +12,5 @@
     <string name="over_100_stars">100+ stars</string>
     <string name="all_stars">All</string>
     <string name="user_repos_button_text">User Repos</string>
+    <string name="refresh_button_text">Refresh</string>
 </resources>

@@ -6,10 +6,10 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reposRecyclerView"
+        android:id="@+id/userReposRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        tools:listitem="@layout/repo_item" />
+        tools:listitem="@layout/user_repo_item" />
     
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

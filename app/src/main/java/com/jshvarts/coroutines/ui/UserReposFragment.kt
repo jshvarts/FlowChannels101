@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
@@ -19,7 +18,6 @@ import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.UserReposFragmentBinding
 import com.jshvarts.coroutines.domain.MinStarCount
 import com.jshvarts.coroutines.domain.NoMinStarCount
-import com.jshvarts.coroutines.domain.RepoOwner
 import javax.inject.Inject
 
 private const val GRID_COLUMN_COUNT = 2
@@ -39,6 +37,10 @@ class UserReposFragment : Fragment() {
 
     private var _binding: UserReposFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private val refreshAfterErrorListener = View.OnClickListener {
+        viewModel.lookupUserRepos(DEFAULT_USERNAME)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +62,7 @@ class UserReposFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.reposRecyclerView.apply {
+        binding.userReposRecyclerView.apply {
             adapter = recyclerViewAdapter
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
@@ -75,8 +77,9 @@ class UserReposFragment : Fragment() {
             Snackbar.make(
                 binding.root,
                 R.string.error_message,
-                Snackbar.LENGTH_LONG
-            ).show()
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(R.string.refresh_button_text, refreshAfterErrorListener)
+                .show()
         })
 
         viewModel.showSpinner.observe(viewLifecycleOwner, Observer { showSpinner ->
@@ -115,11 +118,5 @@ class UserReposFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
-        val action = UserReposFragmentDirections
-            .actionReposToUserDetails(repoOwner.login)
-        findNavController().navigate(action)
     }
 }

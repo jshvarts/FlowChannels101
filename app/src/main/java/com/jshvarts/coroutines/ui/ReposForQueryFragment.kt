@@ -32,6 +32,10 @@ class ReposForQueryFragment : Fragment() {
     private var _binding: ReposForQueryFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private val refreshAfterErrorListener = View.OnClickListener {
+        viewModel.lookupRepos(DEFAULT_QUERY)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -67,8 +71,9 @@ class ReposForQueryFragment : Fragment() {
             Snackbar.make(
                 binding.root,
                 R.string.error_message,
-                Snackbar.LENGTH_LONG
-            ).show()
+                Snackbar.LENGTH_INDEFINITE
+            ).setAction(R.string.refresh_button_text, refreshAfterErrorListener)
+                .show()
         })
 
         viewModel.showSpinner.observe(viewLifecycleOwner, Observer { showSpinner ->
@@ -88,7 +93,7 @@ class ReposForQueryFragment : Fragment() {
     }
 
     private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
-        val action = UserReposFragmentDirections
+        val action = ReposForQueryFragmentDirections
             .actionReposToUserDetails(repoOwner.login)
         findNavController().navigate(action)
     }
