@@ -51,6 +51,7 @@ class UserDetailFragment : Fragment() {
         viewModel.userDetails.observe(viewLifecycleOwner, Observer { userDetails ->
             Picasso.get()
                 .load(userDetails.avatarUrl)
+                .placeholder(R.drawable.avatar_placeholder)
                 .resize(AVATAR_WIDTH, AVATAR_WIDTH)
                 .centerCrop()
                 .into(binding.avatarImageView)
