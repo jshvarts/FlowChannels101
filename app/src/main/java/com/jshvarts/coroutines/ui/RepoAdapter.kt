@@ -13,8 +13,11 @@ import com.jshvarts.coroutines.domain.RepoOwner
 class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
     ListAdapter<Repo, RepoAdapter.RepoViewHolder>(RepoDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RepoViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val binding = RepoItemBinding.inflate(inflater, parent, false)
+        val binding = RepoItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return RepoViewHolder(binding)
     }
 
@@ -26,12 +29,16 @@ class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
         private val binding: RepoItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private val repoNameView = binding.repoName
+        private val starsView = binding.stars
+        private val repoOwnerView = binding.repoOwner
+
         fun bind(item: Repo) {
-            binding.repoName.text = item.name
-            binding.stars.text = itemView.resources.getQuantityString(
+            repoNameView.text = item.name
+            starsView.text = itemView.resources.getQuantityString(
                 R.plurals.repo_stars, 0, item.stars
             )
-            binding.repoOwner.apply {
+            repoOwnerView.apply {
                 text = item.owner.login
                 setOnClickListener {
                     clickListener.invoke(item.owner)
