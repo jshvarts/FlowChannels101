@@ -4,23 +4,23 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonQualifier
 import com.squareup.moshi.ToJson
 
-data class RepoWrapper(
+data class RepoList(
     val items: List<Repo>
 )
 
 @Retention(AnnotationRetention.RUNTIME)
 @JsonQualifier
-annotation class Wrapped
+annotation class WrappedRepoList
 
-class ReposJsonConverter {
-    @Wrapped
+class ReposJsonAdapter {
+    @WrappedRepoList
     @FromJson
-    fun fromJson(json: RepoWrapper): List<Repo> {
+    fun fromJson(json: RepoList): List<Repo> {
         return json.items
     }
 
     @ToJson
-    fun toJson(@Wrapped value: List<Repo>): RepoWrapper {
+    fun toJson(@WrappedRepoList value: List<Repo>): RepoList {
         throw UnsupportedOperationException()
     }
 }
