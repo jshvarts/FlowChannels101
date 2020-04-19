@@ -2,7 +2,7 @@ package com.jshvarts.coroutines.repository.api
 
 import com.jshvarts.coroutines.domain.Repo
 import com.jshvarts.coroutines.domain.UserDetails
-import com.jshvarts.coroutines.domain.Wrapped
+import com.jshvarts.coroutines.domain.WrappedRepoList
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -20,6 +20,6 @@ interface ApiService {
     ): List<Repo>
 
     @GET("search/repositories?per_page=$MAX_RESULTS_PER_PAGE")
-    @Wrapped
+    @WrappedRepoList
     suspend fun getReposForQuery(@Query("q") query: String): List<Repo>
 }

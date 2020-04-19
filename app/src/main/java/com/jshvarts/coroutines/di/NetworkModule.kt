@@ -1,6 +1,6 @@
 package com.jshvarts.coroutines.di
 
-import com.jshvarts.coroutines.domain.ReposJsonConverter
+import com.jshvarts.coroutines.domain.ReposJsonAdapter
 import com.jshvarts.coroutines.repository.api.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -25,7 +25,7 @@ class NetworkModule {
             .addInterceptor(loggingInterceptor)
 
         val moshi = Moshi.Builder()
-            .add(ReposJsonConverter())
+            .add(ReposJsonAdapter())
             .add(KotlinJsonAdapterFactory())
             .build()
 
