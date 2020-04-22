@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
@@ -48,7 +48,7 @@ class UserDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.userDetails.observe(viewLifecycleOwner, Observer { userDetails ->
+        viewModel.userDetails.observe(viewLifecycleOwner) { userDetails ->
             Picasso.get()
                 .load(userDetails.avatarUrl)
                 .placeholder(R.drawable.avatar_placeholder)
@@ -57,17 +57,17 @@ class UserDetailFragment : Fragment() {
                 .into(binding.avatarImageView)
 
             binding.userFullName.text = userDetails.name
-        })
+        }
 
-        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (!isError) return@Observer
+        viewModel.isError.observe(viewLifecycleOwner) { isError ->
+            if (!isError) return@observe
 
             Snackbar.make(
                 binding.root,
                 R.string.error_message,
                 Snackbar.LENGTH_LONG
             ).show()
-        })
+        }
 
         viewModel.lookupUser(args.username)
 
