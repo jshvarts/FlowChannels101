@@ -9,8 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
@@ -67,12 +67,12 @@ class UserReposFragment : Fragment() {
             layoutManager = GridLayoutManager(activity, GRID_COLUMN_COUNT)
         }
 
-        viewModel.userRepos.observe(viewLifecycleOwner, Observer {
+        viewModel.userRepos.observe(viewLifecycleOwner) {
             recyclerViewAdapter.submitList(it)
-        })
+        }
 
-        viewModel.isError.observe(viewLifecycleOwner, Observer { isError ->
-            if (!isError) return@Observer
+        viewModel.isError.observe(viewLifecycleOwner) { isError ->
+            if (!isError) return@observe
 
             Snackbar.make(
                 binding.root,
@@ -80,11 +80,11 @@ class UserReposFragment : Fragment() {
                 Snackbar.LENGTH_INDEFINITE
             ).setAction(R.string.refresh_button_text, refreshAfterErrorListener)
                 .show()
-        })
+        }
 
-        viewModel.showSpinner.observe(viewLifecycleOwner, Observer { showSpinner ->
+        viewModel.showSpinner.observe(viewLifecycleOwner) { showSpinner ->
             binding.pullToRefresh.isRefreshing = showSpinner
-        })
+        }
 
         viewModel.lookupUserRepos(DEFAULT_USERNAME)
 
