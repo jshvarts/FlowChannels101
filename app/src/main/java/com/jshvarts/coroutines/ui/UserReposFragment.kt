@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
@@ -24,9 +25,9 @@ private const val GRID_COLUMN_COUNT = 2
 private const val STAR_COUNT_OVER_1_000 = 1_000
 private const val STAR_COUNT_OVER_100 = 100
 
-private const val DEFAULT_USERNAME = "JakeWharton"
-
 class UserReposFragment : Fragment() {
+
+    private val args by navArgs<UserReposFragmentArgs>()
 
     private val recyclerViewAdapter = UserRepoAdapter()
 
@@ -39,7 +40,7 @@ class UserReposFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val refreshAfterErrorListener = View.OnClickListener {
-        viewModel.lookupUserRepos(DEFAULT_USERNAME)
+        viewModel.lookupUserRepos(args.username)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,11 +87,11 @@ class UserReposFragment : Fragment() {
             binding.pullToRefresh.isRefreshing = showSpinner
         }
 
-        viewModel.lookupUserRepos(DEFAULT_USERNAME)
-
         binding.pullToRefresh.setOnRefreshListener {
-            viewModel.lookupUserRepos(DEFAULT_USERNAME)
+            viewModel.lookupUserRepos(args.username)
         }
+
+        viewModel.lookupUserRepos(args.username)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
