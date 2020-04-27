@@ -88,8 +88,6 @@ class ReposForQueryFragment : Fragment() {
         binding.pullToRefresh.setOnRefreshListener {
             viewModel.refresh()
         }
-
-        viewModel.lookupReposForDefault()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

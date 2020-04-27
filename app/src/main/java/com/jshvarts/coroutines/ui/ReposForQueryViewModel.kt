@@ -30,7 +30,7 @@ class ReposForQueryViewModel @Inject constructor(
 
     private var currentQuery: String = DEFAULT_QUERY
 
-    fun lookupReposForDefault() {
+    init {
         lookupRepos(DEFAULT_QUERY)
     }
 
@@ -50,7 +50,7 @@ class ReposForQueryViewModel @Inject constructor(
                 }
         }
     }
-    
+
     fun refresh() {
         lookupRepos(currentQuery)
     }
