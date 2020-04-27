@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val DEFAULT_QUERY = "kotlin"
+
 class ReposForQueryViewModel @Inject constructor(
     private val reposForQueryRepository: ReposForQueryRepository
 ) : ViewModel() {
@@ -26,7 +28,15 @@ class ReposForQueryViewModel @Inject constructor(
     private val _showSpinner = MutableLiveData<Boolean>(false)
     val showSpinner: LiveData<Boolean> = _showSpinner
 
+    private var currentQuery: String = DEFAULT_QUERY
+
+    fun lookupReposForDefault() {
+        lookupRepos(DEFAULT_QUERY)
+    }
+
     fun lookupRepos(query: String) {
+        currentQuery = query
+
         viewModelScope.launch {
             reposForQueryRepository.getReposForQuery(query)
                 .onStart {
@@ -39,6 +49,10 @@ class ReposForQueryViewModel @Inject constructor(
                     _repos.value = repoList.sortedByDescending { it.stars }
                 }
         }
+    }
+    
+    fun refresh() {
+        lookupRepos(currentQuery)
     }
 }
 

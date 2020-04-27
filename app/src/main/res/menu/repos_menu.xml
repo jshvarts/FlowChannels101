@@ -2,15 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/over_1000_stars"
-        android:title="@string/over_1000_stars"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/over_100_stars"
-        android:title="@string/over_100_stars"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/any_stars"
-        android:title="@string/all_stars"
-        app:showAsAction="never" />
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
 </menu>
