@@ -82,6 +82,7 @@ class ReposForQueryFragment : Fragment() {
 
         viewModel.showSpinner.observe(viewLifecycleOwner) { showSpinner ->
             binding.pullToRefresh.isRefreshing = showSpinner
+            binding.scrimView.visibility = if (showSpinner) View.VISIBLE else View.GONE
         }
 
         binding.pullToRefresh.setOnRefreshListener {
@@ -90,7 +91,7 @@ class ReposForQueryFragment : Fragment() {
 
         viewModel.lookupReposForDefault()
     }
-    
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.repos_menu, menu)
 
