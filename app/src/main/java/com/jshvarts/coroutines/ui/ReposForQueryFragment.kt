@@ -1,9 +1,14 @@
 package com.jshvarts.coroutines.ui
 
+import android.app.SearchManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +23,6 @@ import com.jshvarts.coroutines.domain.RepoOwner
 import javax.inject.Inject
 
 private const val GRID_COLUMN_COUNT = 2
-private const val DEFAULT_QUERY = "kotlin"
 
 class ReposForQueryFragment : Fragment() {
 
@@ -33,7 +37,7 @@ class ReposForQueryFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val refreshAfterErrorListener = View.OnClickListener {
-        viewModel.lookupRepos(DEFAULT_QUERY)
+        viewModel.refresh()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,11 +84,38 @@ class ReposForQueryFragment : Fragment() {
             binding.pullToRefresh.isRefreshing = showSpinner
         }
 
-        viewModel.lookupRepos(DEFAULT_QUERY)
-
         binding.pullToRefresh.setOnRefreshListener {
-            viewModel.lookupRepos(DEFAULT_QUERY)
+            viewModel.refresh()
         }
+
+        viewModel.lookupReposForDefault()
+    }
+    
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.repos_menu, menu)
+
+        val manager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        searchView.setSearchableInfo(manager.getSearchableInfo(requireActivity().componentName))
+
+        val querySearchListener = object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query ?: return false
+
+                searchView.clearFocus()
+                searchView.setQuery("", false)
+                searchItem.collapseActionView()
+                viewModel.lookupRepos(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        }
+        searchView.setOnQueryTextListener(querySearchListener)
     }
 
     override fun onDestroyView() {
