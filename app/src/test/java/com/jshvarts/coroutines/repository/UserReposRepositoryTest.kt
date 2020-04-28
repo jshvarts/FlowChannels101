@@ -15,6 +15,7 @@ import org.junit.Test
 import java.io.IOException
 
 private const val TEST_USERNAME = "someUsername"
+private const val TEST_AVATAR_URL = "someAvatarUrl"
 
 class UserReposRepositoryTest {
 
@@ -23,8 +24,9 @@ class UserReposRepositoryTest {
     @Test
     fun `should get user repos on success`() = testDispatcher.runBlockingTest {
         // GIVEN
-        val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 10)
-        val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val repoOwner = RepoOwner(TEST_USERNAME, TEST_AVATAR_URL)
+        val repo1 = Repo(name = "someRepo1", owner = repoOwner, stars = 10)
+        val repo2 = Repo(name = "someRepo2", owner = repoOwner, stars = 55)
         val expectedRepoList = listOf(repo1, repo2)
 
         val apiService = mock<ApiService> {
