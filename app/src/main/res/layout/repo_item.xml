@@ -12,15 +12,15 @@
         android:id="@+id/repoName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="20dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:padding="8dp"
         android:textColor="#ffffff"
         android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Repo name" />
 
     <TextView
@@ -33,6 +33,15 @@
         app:layout_constraintTop_toBottomOf="@id/repoName"
         tools:text="Stars: 100" />
 
+    <ImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/repoOwner"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:src="@tools:sample/avatars" />
+
     <TextView
         android:id="@+id/repoOwner"
         android:layout_width="wrap_content"
@@ -41,7 +50,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stars"
         tools:text="Repo owner" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

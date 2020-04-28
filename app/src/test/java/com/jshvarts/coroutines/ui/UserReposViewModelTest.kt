@@ -22,6 +22,7 @@ import org.junit.Test
 import java.io.IOException
 
 private const val TEST_USERNAME = "someUsername"
+private const val TEST_AVATAR_URL = "someAvatarUrl"
 
 class UserReposViewModelTest {
     @get:Rule
@@ -38,6 +39,8 @@ class UserReposViewModelTest {
 
     private val showSpinnerObserver = mock<Observer<Boolean>>()
 
+    private val repoOwner = RepoOwner(TEST_USERNAME, TEST_AVATAR_URL)
+
     private lateinit var userReposViewModel: UserReposViewModel
 
     @Before
@@ -52,8 +55,8 @@ class UserReposViewModelTest {
     @Test
     fun `should emit user repos on success`() = rule.dispatcher.runBlockingTest {
         // GIVEN
-        val repo1 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
-        val repo2 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val repo1 = Repo(name = "someRepo2", owner = repoOwner, stars = 10)
+        val repo2 = Repo(name = "someRepo1", owner = repoOwner, stars = 55)
         val expectedRepoList = listOf(repo1, repo2)
 
         val channel = Channel<List<Repo>>()
@@ -77,7 +80,7 @@ class UserReposViewModelTest {
     @Test
     fun `should emit error on repos lookup failure`() = rule.dispatcher.runBlockingTest {
         // GIVEN
-        val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 55)
+        val repo1 = Repo(name = "someRepo1", owner = repoOwner, stars = 55)
         val expectedRepoList = listOf(repo1)
 
         val channel = Channel<List<Repo>>()
@@ -104,8 +107,8 @@ class UserReposViewModelTest {
     fun `should emit user repos on success and filter by stars`() =
         rule.dispatcher.runBlockingTest {
             // GIVEN
-            val repo1 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
-            val repo2 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 150)
+            val repo1 = Repo(name = "someRepo2", owner = repoOwner, stars = 10)
+            val repo2 = Repo(name = "someRepo1", owner = repoOwner, stars = 150)
             val expectedRepoList = listOf(repo2)
 
             val channel = Channel<List<Repo>>()
@@ -131,8 +134,8 @@ class UserReposViewModelTest {
     fun `should emit user repos in correct order and without filter applied`() =
         rule.dispatcher.runBlockingTest {
             // GIVEN
-            val repo1 = Repo(name = "someRepo1", owner = RepoOwner(TEST_USERNAME), stars = 150)
-            val repo2 = Repo(name = "someRepo2", owner = RepoOwner(TEST_USERNAME), stars = 10)
+            val repo1 = Repo(name = "someRepo1", owner = repoOwner, stars = 150)
+            val repo2 = Repo(name = "someRepo2", owner = repoOwner, stars = 10)
             val expectedRepoList = listOf(repo2, repo1)
 
             val channel = Channel<List<Repo>>()

@@ -17,7 +17,7 @@ import com.jshvarts.coroutines.databinding.UserDetailsFragmentBinding
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
-private const val AVATAR_WIDTH = 250
+private const val AVATAR_WIDTH = 400
 
 class UserDetailFragment : Fragment() {
     private val args by navArgs<UserDetailFragmentArgs>()
@@ -51,7 +51,6 @@ class UserDetailFragment : Fragment() {
         viewModel.userDetails.observe(viewLifecycleOwner) { userDetails ->
             Picasso.get()
                 .load(userDetails.avatarUrl)
-                .placeholder(R.drawable.avatar_placeholder)
                 .resize(AVATAR_WIDTH, AVATAR_WIDTH)
                 .centerCrop()
                 .into(binding.avatarImageView)

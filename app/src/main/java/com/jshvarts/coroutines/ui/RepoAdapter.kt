@@ -9,6 +9,9 @@ import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.RepoItemBinding
 import com.jshvarts.coroutines.domain.Repo
 import com.jshvarts.coroutines.domain.RepoOwner
+import com.squareup.picasso.Picasso
+
+private const val AVATAR_WIDTH = 250
 
 class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
     ListAdapter<Repo, RepoAdapter.RepoViewHolder>(RepoDiffCallback()) {
@@ -32,17 +35,26 @@ class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
         private val repoNameView = binding.repoName
         private val starsView = binding.stars
         private val repoOwnerView = binding.repoOwner
+        private val avatarImageView = binding.avatarImageView
 
         fun bind(item: Repo) {
             repoNameView.text = item.name
             starsView.text = itemView.resources.getQuantityString(
                 R.plurals.repo_stars, 0, item.stars
             )
-            repoOwnerView.apply {
-                text = item.owner.login
-                setOnClickListener {
-                    clickListener.invoke(item.owner)
-                }
+
+            Picasso.get()
+                .load(item.owner.avatarUrl)
+                .resize(AVATAR_WIDTH, AVATAR_WIDTH)
+                .centerCrop()
+                .into(avatarImageView)
+            avatarImageView.setOnClickListener {
+                clickListener.invoke(item.owner)
+            }
+
+            repoOwnerView.text = item.owner.login
+            repoOwnerView.setOnClickListener {
+                clickListener.invoke(item.owner)
             }
         }
     }
