@@ -2,6 +2,7 @@ package com.jshvarts.coroutines.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,7 @@ import com.squareup.picasso.Picasso
 
 private const val AVATAR_WIDTH = 250
 
-class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
+class RepoAdapter(private val clickListener: (RepoOwner, ImageView) -> Unit) :
     ListAdapter<Repo, RepoAdapter.RepoViewHolder>(RepoDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RepoViewHolder {
         val binding = RepoItemBinding.inflate(
@@ -43,18 +44,21 @@ class RepoAdapter(private val clickListener: (RepoOwner) -> Unit) :
                 R.plurals.repo_stars, 0, item.stars
             )
 
-            Picasso.get()
-                .load(item.owner.avatarUrl)
-                .resize(AVATAR_WIDTH, AVATAR_WIDTH)
-                .centerCrop()
-                .into(avatarImageView)
-            avatarImageView.setOnClickListener {
-                clickListener.invoke(item.owner)
+            avatarImageView.apply {
+                Picasso.get()
+                    .load(item.owner.avatarUrl)
+                    .resize(AVATAR_WIDTH, AVATAR_WIDTH)
+                    .centerCrop()
+                    .into(this)
+                transitionName = item.owner.login
+                setOnClickListener {
+                    clickListener.invoke(item.owner, this)
+                }
             }
 
             repoOwnerView.text = item.owner.login
             repoOwnerView.setOnClickListener {
-                clickListener.invoke(item.owner)
+                clickListener.invoke(item.owner, avatarImageView)
             }
         }
     }

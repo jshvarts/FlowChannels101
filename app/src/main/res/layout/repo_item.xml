@@ -46,6 +46,8 @@
         android:id="@+id/repoOwner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:padding="16dp"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
