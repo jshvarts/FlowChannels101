@@ -8,11 +8,13 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -26,7 +28,9 @@ private const val GRID_COLUMN_COUNT = 2
 
 class ReposForQueryFragment : Fragment() {
 
-    private val recyclerViewAdapter = RepoAdapter { onRepoOwnerClicked(it) }
+    private val recyclerViewAdapter = RepoAdapter { repoOwner, avatarImageView ->
+        onRepoOwnerClicked(repoOwner, avatarImageView)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -122,9 +126,13 @@ class ReposForQueryFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun onRepoOwnerClicked(repoOwner: RepoOwner) {
+    private fun onRepoOwnerClicked(repoOwner: RepoOwner, avatarImageView: ImageView) {
         val action = ReposForQueryFragmentDirections
             .actionReposToUserDetails(repoOwner.login)
-        findNavController().navigate(action)
+
+        val extras = FragmentNavigatorExtras(
+            avatarImageView to repoOwner.login
+        )
+        findNavController().navigate(action, extras)
     }
 }

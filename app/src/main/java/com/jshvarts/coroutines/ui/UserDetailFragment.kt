@@ -10,14 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
 import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.UserDetailsFragmentBinding
+import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
-private const val AVATAR_WIDTH = 400
+private const val AVATAR_WIDTH = 500
 
 class UserDetailFragment : Fragment() {
     private val args by navArgs<UserDetailFragmentArgs>()
@@ -30,8 +32,20 @@ class UserDetailFragment : Fragment() {
     private var _binding: UserDetailsFragmentBinding? = null
     private val binding get() = _binding!!
 
+    private val imageLoadingCallback = object : Callback {
+        override fun onSuccess() {
+            startPostponedEnterTransition()
+        }
+
+        override fun onError(e: Exception?) {
+            // no-op
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = TransitionInflater.from(context)
+            .inflateTransition(android.R.transition.move)
         (requireActivity().application as CoroutinesApp)
             .appComponent
             .inject(this)
@@ -41,6 +55,7 @@ class UserDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        postponeEnterTransition()
         _binding = UserDetailsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,8 +68,9 @@ class UserDetailFragment : Fragment() {
                 .load(userDetails.avatarUrl)
                 .resize(AVATAR_WIDTH, AVATAR_WIDTH)
                 .centerCrop()
-                .into(binding.avatarImageView)
+                .into(binding.avatarImageView, imageLoadingCallback)
 
+            binding.avatarImageView.transitionName = args.username
             binding.userFullName.text = userDetails.name
         }
 
