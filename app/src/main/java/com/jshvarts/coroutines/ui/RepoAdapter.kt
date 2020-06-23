@@ -30,7 +30,7 @@ class RepoAdapter(private val clickListener: (RepoOwner, ImageView) -> Unit) :
     }
 
     inner class RepoViewHolder(
-        private val binding: RepoItemBinding
+        binding: RepoItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private val repoNameView = binding.repoName
