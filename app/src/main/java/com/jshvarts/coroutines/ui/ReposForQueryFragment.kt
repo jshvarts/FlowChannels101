@@ -12,30 +12,26 @@ import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.ReposForQueryFragmentBinding
 import com.jshvarts.coroutines.domain.RepoOwner
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val GRID_COLUMN_COUNT = 2
 
+@AndroidEntryPoint
 class ReposForQueryFragment : Fragment() {
 
     private val recyclerViewAdapter = RepoAdapter { repoOwner, avatarImageView ->
         onRepoOwnerClicked(repoOwner, avatarImageView)
     }
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: ReposForQueryViewModel by viewModels { viewModelFactory }
+    private val viewModel: ReposForQueryViewModel by viewModels()
 
     private var _binding: ReposForQueryFragmentBinding? = null
     private val binding get() = _binding!!
@@ -47,9 +43,6 @@ class ReposForQueryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        (requireActivity().application as CoroutinesApp)
-            .appComponent
-            .inject(this)
     }
 
     override fun onCreateView(

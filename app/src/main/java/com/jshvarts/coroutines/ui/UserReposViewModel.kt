@@ -1,5 +1,6 @@
 package com.jshvarts.coroutines.ui
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class UserReposViewModel @Inject constructor(
+class UserReposViewModel @ViewModelInject constructor(
     private val userReposRepository: UserReposRepository
 ) : ViewModel() {
 

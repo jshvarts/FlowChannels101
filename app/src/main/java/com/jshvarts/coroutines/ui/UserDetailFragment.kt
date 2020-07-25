@@ -6,28 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.transition.TransitionInflater
 import com.google.android.material.snackbar.Snackbar
-import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.UserDetailsFragmentBinding
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val AVATAR_WIDTH = 500
 
+@AndroidEntryPoint
 class UserDetailFragment : Fragment() {
     private val args by navArgs<UserDetailFragmentArgs>()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: UserDetailViewModel by viewModels { viewModelFactory }
+    private val viewModel: UserDetailViewModel by viewModels()
 
     private var _binding: UserDetailsFragmentBinding? = null
     private val binding get() = _binding!!
@@ -46,9 +42,6 @@ class UserDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
         sharedElementEnterTransition = TransitionInflater.from(context)
             .inflateTransition(android.R.transition.move)
-        (requireActivity().application as CoroutinesApp)
-            .appComponent
-            .inject(this)
     }
 
     override fun onCreateView(

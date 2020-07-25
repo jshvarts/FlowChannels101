@@ -1,5 +1,6 @@
 package com.jshvarts.coroutines.ui
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,11 +12,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val DEFAULT_QUERY = "kotlin"
 
-class ReposForQueryViewModel @Inject constructor(
+class ReposForQueryViewModel @ViewModelInject constructor(
     private val reposForQueryRepository: ReposForQueryRepository
 ) : ViewModel() {
 
