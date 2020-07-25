@@ -6,6 +6,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,8 +15,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 private const val GITHUB_BASE_URL = "https://api.github.com/"
 
+@InstallIn(ApplicationComponent::class)
 @Module
-class NetworkModule {
+object NetworkModule {
+
     @Provides
     fun provideRetrofit(): ApiService {
         val loggingInterceptor = HttpLoggingInterceptor().apply {

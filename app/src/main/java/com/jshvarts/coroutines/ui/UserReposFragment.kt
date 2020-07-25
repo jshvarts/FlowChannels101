@@ -9,32 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.jshvarts.coroutines.CoroutinesApp
 import com.jshvarts.coroutines.R
 import com.jshvarts.coroutines.databinding.UserReposFragmentBinding
 import com.jshvarts.coroutines.domain.MinStarCount
 import com.jshvarts.coroutines.domain.NoMinStarCount
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 private const val GRID_COLUMN_COUNT = 2
 private const val STAR_COUNT_OVER_1_000 = 1_000
 private const val STAR_COUNT_OVER_100 = 100
 
+@AndroidEntryPoint
 class UserReposFragment : Fragment() {
 
     private val args by navArgs<UserReposFragmentArgs>()
 
     private val recyclerViewAdapter = UserRepoAdapter()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: UserReposViewModel by viewModels { viewModelFactory }
+    private val viewModel: UserReposViewModel by viewModels()
 
     private var _binding: UserReposFragmentBinding? = null
     private val binding get() = _binding!!
@@ -46,9 +42,6 @@ class UserReposFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        (requireActivity().application as CoroutinesApp)
-            .appComponent
-            .inject(this)
     }
 
     override fun onCreateView(
