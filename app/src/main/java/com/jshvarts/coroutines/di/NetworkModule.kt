@@ -3,7 +3,6 @@ package com.jshvarts.coroutines.di
 import com.jshvarts.coroutines.domain.ReposJsonAdapter
 import com.jshvarts.coroutines.repository.api.ApiService
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,7 +29,6 @@ object NetworkModule {
 
         val moshi = Moshi.Builder()
             .add(ReposJsonAdapter())
-            .add(KotlinJsonAdapterFactory())
             .build()
 
         return Retrofit.Builder()

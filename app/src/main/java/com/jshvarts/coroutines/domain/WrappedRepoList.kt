@@ -1,9 +1,11 @@
 package com.jshvarts.coroutines.domain
 
 import com.squareup.moshi.FromJson
+import com.squareup.moshi.JsonClass
 import com.squareup.moshi.JsonQualifier
 import com.squareup.moshi.ToJson
 
+@JsonClass(generateAdapter = true)
 data class RepoList(
     val items: List<Repo>
 )
